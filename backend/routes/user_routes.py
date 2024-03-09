@@ -1,4 +1,4 @@
-from fastapi import Body, APIRouter
+from fastapi import APIRouter
 from models.user_models.new_user import NewUser
 from controllers.user_controller import UserController
 
