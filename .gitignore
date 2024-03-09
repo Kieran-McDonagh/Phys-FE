@@ -1,0 +1,20 @@
+.env
+
+# Python package directories
+__pycache__/
+.venv/
+venv/
+env/
+
+# FastAPI and Uvicorn related directories
+dist/
+build/
+*.egg-info/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
