@@ -4,8 +4,11 @@ from repositories.user_repository import User
 class UserController:
     @staticmethod
     async def post_user(user):
-        response = await User.create_user(user.dict())
-        return 201, {"data": {"new_user": response}}
+        try:
+            response = await User.create_user(user.dict())
+            return 201, {"data": {"new_user": response}}
+        except:
+            raise HTTPException(status_code=500, detail="Internal server error")
     
     
     @staticmethod
