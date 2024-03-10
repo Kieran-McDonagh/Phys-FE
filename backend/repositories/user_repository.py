@@ -1,38 +1,61 @@
 from connection import user_collection
 from bson import ObjectId
 from models.user_models.user import User as UserModel
+import bson
+from fastapi import HTTPException
 
 class User:
     @staticmethod
     async def create_user(user):
         result = await user_collection.insert_one(user)
-        created_user = await user_collection.find_one({"_id": result.inserted_id})
-        return UserModel(**created_user)
-
+        inserted_id = result.inserted_id
+        return UserModel(**{**user, '_id': inserted_id})
+    
+    
     @staticmethod
     async def fetch_all_users():
         users = []
         cursor = user_collection.find({})
         async for document in cursor:
             users.append(UserModel(**document))
-        return users
-    
+        if len(users) > 0:
+            return users
+        else: 
+            raise HTTPException(status_code=404, detail="Users not found")
+        
+        
     @staticmethod
     async def fetch_user_by_id(id):
-        user = await user_collection.find_one({"_id": ObjectId(id)})
-        return UserModel(**user)
+        try:
+            user = await user_collection.find_one({"_id": ObjectId(id)})
+            if user:
+                return UserModel(**user)
+            else:
+                raise HTTPException(status_code=404, detail="User not found")
+        except bson.errors.InvalidId:
+            raise HTTPException(status_code=400, detail="Invalid ID")
+        
     
     @staticmethod
     async def edit_user(id, user_update):
-        update_query = {"$set": user_update}
-        await user_collection.update_one({"_id": ObjectId(id)}, update_query)
-        updated_user = await user_collection.find_one({"_id": ObjectId(id)})
-        return UserModel(**updated_user)
+        try:
+            updated_user = await user_collection.find_one_and_update({"_id": ObjectId(id)},
+                                                                     {"$set": user_update},return_document=True)
+            if updated_user:
+                return UserModel(**updated_user)
+            else:
+                raise HTTPException(status_code=404, detail="user not found")
+        except bson.errors.InvalidId:
+            raise HTTPException(status_code=400, detail="invalid ID")
+        
     
     @staticmethod
     async def remove_user(id):
-        deleted_user = await user_collection.find_one_and_delete({"_id": ObjectId(id)})
-        if deleted_user:
-            return UserModel(**deleted_user)
-        else:
-            return None
+        try:
+            deleted_user = await user_collection.find_one_and_delete({"_id": ObjectId(id)})
+            if deleted_user:
+                return UserModel(**deleted_user)
+            else:
+                raise HTTPException(status_code=404, detail="user not found")
+        except bson.errors.InvalidId:
+            raise HTTPException(status_code=400, detail="invalid ID")
