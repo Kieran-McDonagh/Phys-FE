@@ -1,0 +1,1 @@
+run the tests from the backend root e.g. python scripts/run_tests/run_integration_tests.py  

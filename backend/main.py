@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
-from routes.user_routes import router as user_router
+from backend.routes.user_routes import router as user_router
 
 app = FastAPI()
 
@@ -22,3 +22,5 @@ app.include_router(user_router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
+    
+    

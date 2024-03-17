@@ -1,6 +1,6 @@
-from connection import user_collection
+from backend.connection import user_collection
 from bson import ObjectId
-from models.user_models.user import User as UserModel
+from backend.models.user_models.user import User as UserModel
 import bson
 from fastapi import HTTPException
 

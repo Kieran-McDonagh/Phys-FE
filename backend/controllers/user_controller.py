@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from repositories.user_repository import User
+from backend.repositories.user_repository import User
 
 class UserController:
     @staticmethod
