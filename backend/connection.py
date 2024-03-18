@@ -3,11 +3,13 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+testing = os.environ.get('TEST_ENV', '').lower() == 'true'
+
 client = motor.motor_asyncio.AsyncIOMotorClient(os.environ.get('MONGO_URI'))
-if client:
-    print("Connection to MongoDB successful")
+
+if testing:
+    print("Connection to test MongoDB successful")
+    user_collection = client['test_db']['users']
 else:
-    print("Failed to connect to MongoDB")
-    
-database = client.test_database
-user_collection = database.users
+    print("Connection to MongoDB successful")
+    user_collection = client['prod_db']['users']
