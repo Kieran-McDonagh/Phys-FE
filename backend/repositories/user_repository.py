@@ -1,8 +1,11 @@
-from backend.connection import user_collection
+from backend.database.connection import MongoConnection
 from bson import ObjectId
 from backend.models.user_models.user import User as UserModel
 import bson
 from fastapi import HTTPException
+
+mongo_connection = MongoConnection()
+user_collection = mongo_connection.get_collection('users')
 
 class User:
     @staticmethod

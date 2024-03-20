@@ -1,24 +1,26 @@
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
-from backend.connection import MongoConnection
-from backend.tests.test_data.users import users
+from backend.tests.utils.clean_collection import CleanDatabase
 
 client = TestClient(app)
+cleaner = CleanDatabase()
 
-async def clean_collection():
-    connection = MongoConnection()
-    await connection.drop_collection("users")
-    await connection.seed_users(users)
 
 @pytest.mark.asyncio
-async def test_example():
-    await clean_collection()
+async def test_get_all_users():
+    await cleaner.clean_user_collection()
     response = client.get("/api/user")
-    print(response.json())
-    assert True
-    
+    response_data = response.json()
+    assert response.status_code == 200
 
+    users = response_data[1]["data"]["all_users"]
+    for user in users:
+        assert "_id" in user
+        assert isinstance(user["_id"], str)
 
+        assert "name" in user
+        assert isinstance(user["name"], str)
 
-
+        assert "email" in user
+        assert isinstance(user["email"], str)
