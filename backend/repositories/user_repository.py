@@ -7,7 +7,7 @@ from fastapi import HTTPException
 mongo_connection = MongoConnection()
 user_collection = mongo_connection.get_collection('users')
 
-class User:
+class UserRepository:
     @staticmethod
     async def create_user(user):
         result = await user_collection.insert_one(user)
