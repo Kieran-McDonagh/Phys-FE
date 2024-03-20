@@ -1,24 +1,23 @@
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
-from backend.connection import user_collection
+from backend.connection import MongoConnection
+from backend.tests.test_data.users import users
 
 client = TestClient(app)
 
-@pytest.mark.asyncio
-async def seed_db():
-    await user_collection.drop()
-    await user_collection.insert_one({"name": "foo", "email": "bar@email.com"})
+async def clean_collection():
+    connection = MongoConnection()
+    await connection.drop_collection("users")
+    await connection.seed_users(users)
 
 @pytest.mark.asyncio
-async def test_read_item():
-    response = client.get("/api/user/")
+async def test_example():
+    await clean_collection()
+    response = client.get("/api/user")
     print(response.json())
-
-
-
-
-
+    assert True
+    
 
 
 

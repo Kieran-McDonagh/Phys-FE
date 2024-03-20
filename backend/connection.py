@@ -3,23 +3,42 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-mongo_uri = os.environ.get('MONGO_URI')
-test_mongo_uri = os.environ.get('TEST_MONGO_URI')
 
-# Function to get the appropriate MongoDB URI based on the environment
-def get_mongo_uri():
-    if os.environ.get('ENV') == 'test':
-        print('Entering test environment')
-        return test_mongo_uri
-    else:
-        print('entering production environment')
-        return mongo_uri
+class MongoConnection:
+    def __init__(self):
+        self.mongo_uri = os.environ.get('MONGO_URI')
+        self.test_mongo_uri = os.environ.get('TEST_MONGO_URI')
+        self.client = motor.motor_asyncio.AsyncIOMotorClient(self.get_mongo_uri())
+        self.database = self.client.get_database()
+        print('connected to:', self.database.name)
 
-client = motor.motor_asyncio.AsyncIOMotorClient(get_mongo_uri())
-print("Connection to MongoDB successful")
+    def get_mongo_uri(self):
+        if os.environ.get('ENV') == 'test':
+            print('Entering test environment')
+            return self.test_mongo_uri
+        else:
+            print('entering production environment')
+            return self.mongo_uri
 
-database = client.get_database()
-print("Connected to database:", database.name)
+    def get_user_collection(self):
+        print('connecting to user collection')
+        return self.database.get_collection("users")
+    
+    async def drop_collection(self, collection):
+        try:
+            await self.database.drop_collection(collection)
+            print('Dropped collection:', collection)
+        except Exception as e:
+            print('Error dropping collection:', e)
+            
+    async def seed_users(self, user_data):
+        try:
+            await self.database['users'].insert_many(user_data)
+            print('User collection seeded')
+        except Exception as e:
+            print('Error seeding collection:', e)
 
-user_collection = database.get_collection("users")
+
+mongo_connection = MongoConnection()
+user_collection = mongo_connection.get_user_collection()
 
