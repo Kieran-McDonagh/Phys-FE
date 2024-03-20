@@ -1,15 +1,18 @@
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
-from backend.tests.utils.clean_collection import CleanDatabase
+from backend.tests.utils.clean_collection import CleanTestDatabase
 
 client = TestClient(app)
-cleaner = CleanDatabase()
+clean_test_database = CleanTestDatabase()
 
+@pytest.fixture
+async def clean_db():
+    await clean_test_database.clean_user_collection()
 
 @pytest.mark.asyncio
-async def test_get_all_users():
-    await cleaner.clean_user_collection()
+async def test_get_all_users(clean_db):
+    await clean_db
     response = client.get("/api/user")
     response_data = response.json()
     assert response.status_code == 200
