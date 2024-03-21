@@ -31,6 +31,7 @@ class UserRepository:
     async def fetch_user_by_id(id):
         try:
             user = await user_collection.find_one({"_id": ObjectId(id)})
+            print(user)
             if user:
                 return UserModel(**user)
             else:

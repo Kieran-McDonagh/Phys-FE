@@ -7,12 +7,10 @@ client = TestClient(app)
 clean_test_database = CleanTestDatabase()
 
 @pytest.fixture
-async def clean_db():
-    await clean_test_database.clean_user_collection()
+def clean_db():
+    clean_test_database.clean_user_collection()
 
-@pytest.mark.asyncio
-async def test_get_all_users(clean_db):
-    await clean_db
+def test_get_all_users(clean_db):
     response = client.get("/api/user")
     response_data = response.json()
     assert response.status_code == 200
@@ -27,3 +25,11 @@ async def test_get_all_users(clean_db):
 
         assert "email" in user
         assert isinstance(user["email"], str)
+        
+
+def test_get_user_by_id(clean_db):
+    # build a user with the user builder
+    response = client.get(f"/api/user/{id}")
+    response_data = response.json()
+    
+    print(response_data)

@@ -6,6 +6,6 @@ class CleanTestDatabase:
     def __init__(self):
         self.connection = MongoConnection()
 
-    async def clean_user_collection(self):
-        await self.connection.drop_collection("test_users")
-        await self.connection.seed_collection("test_users", user_data)
+    def clean_user_collection(self):
+        self.connection.drop_collection("test_users")
+        self.connection.seed_collection("test_users", user_data)
