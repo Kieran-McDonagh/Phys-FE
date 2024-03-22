@@ -1,5 +1,5 @@
 from backend.database.connection import MongoConnection
-from backend.tests.seed_test_data.users import users as user_data
+from backend.tests.seed_test_data.users import users
 
 
 class CleanTestDatabase:
@@ -8,4 +8,8 @@ class CleanTestDatabase:
 
     def clean_user_collection(self):
         self.connection.drop_collection("test_users")
-        self.connection.seed_collection("test_users", user_data)
+        return self
+
+    def seed_user_collection(self):
+        self.connection.seed_collection("test_users", users)
+        return self
