@@ -14,13 +14,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def read_root():
     return RedirectResponse(url="/docs")
+
 
 app.include_router(user_router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
-    
-    
