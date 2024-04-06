@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from backend.routes.user_routes import router as user_router
+from backend.routes.workout_routes import router as workout_router
 
 app = FastAPI()
 
@@ -19,8 +20,8 @@ app.add_middleware(
 async def read_root():
     return RedirectResponse(url="/docs")
 
-
 app.include_router(user_router, prefix="/api")
+app.include_router(workout_router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)

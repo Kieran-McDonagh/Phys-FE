@@ -4,6 +4,7 @@ class User(BaseModel):
     id: str = Field(alias="_id")
     name: str
     email: EmailStr
+    workouts: list
     
     def __init__(self, **data):
         if data.get('_id'):

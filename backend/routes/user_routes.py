@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from backend.controllers.user_controller import UserController
 from backend.models.user_models.new_user import NewUser
-from backend.models.user_models.user import User
 
 router = APIRouter()
 

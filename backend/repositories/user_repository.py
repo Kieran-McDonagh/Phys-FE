@@ -36,7 +36,7 @@ class UserRepository:
         user_dict = dict(user)
         new_user = user_collection.insert_one(user_dict)
         inserted_id = new_user.inserted_id
-        return UserModel(**{**user_dict, "_id": inserted_id})
+        return UserModel(**{**user_dict, "_id": inserted_id, "workouts": []})
 
     @staticmethod
     async def edit_user(id, update):
