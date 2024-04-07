@@ -168,7 +168,12 @@ def test_update_user_201(clean_db):
 
 
 def test_update_user_404(clean_db):
-    updated_user = {"name": "foo", "email": "fighter@email.com", "workouts": [], "friends": []}
+    updated_user = {
+        "name": "foo",
+        "email": "fighter@email.com",
+        "workouts": [],
+        "friends": [],
+    }
 
     response = client.put("/api/users/85fedb7a8433a888c1aca57f", json=updated_user)
     response_data = response.json()
@@ -279,6 +284,20 @@ def test_deleted_user_not_in_friends_list(clean_db):
 
     for user in response_data:
         assert "75fedb7a8433a888c1aca57d" not in user["friends"]
+
+
+def test_delete_user_with_no_friends(clean_db):
+    response = client.delete("/api/users/85fedb7a8433a888c1aca57e")
+    response_data = response.json()
+
+    assert response.status_code == 200
+    assert response_data == {
+        "_id": "85fedb7a8433a888c1aca57e",
+        "name": "user3",
+        "email": "user3@email.com",
+        "workouts": ["65fedb7a8433a888c1aca57c"],
+        "friends": [],
+    }
 
 
 def test_delete_user_404(clean_db):
