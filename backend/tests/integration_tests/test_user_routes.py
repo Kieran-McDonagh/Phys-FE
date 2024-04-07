@@ -18,10 +18,38 @@ def test_get_all_users_200(clean_db):
         assert isinstance(user["email"], str)
         assert "workouts" in user
         assert isinstance(user["workouts"], list)
+        assert "friends" in user
+        assert isinstance(user["friends"], list)
 
 
 def test_get_all_users_404(empty_db):
     response = client.get("/api/users")
+    response_data = response.json()
+
+    assert response.status_code == 404
+    assert response_data == {"detail": "Users not found"}
+
+
+def test_get_all_users_with_name_query_200(clean_db):
+    response = client.get("/api/users?name=user1")
+    response_data = response.json()
+
+    assert response.status_code == 200
+    assert len(response_data) == 1
+
+    user = response_data[0]
+
+    assert user == {
+        "_id": "65fedb7a8433a888c1aca57c",
+        "name": "user1",
+        "email": "user1@email.com",
+        "workouts": [],
+        "friends": ["75fedb7a8433a888c1aca57d", "95fedb7a8433a888c1aca57f"],
+    }
+
+
+def test_get_all_users_with_name_query_404(clean_db):
+    response = client.get("/api/users?name=doesnt_exist")
     response_data = response.json()
 
     assert response.status_code == 404
@@ -38,6 +66,7 @@ def test_get_user_by_id_200(clean_db):
         "name": "user1",
         "email": "user1@email.com",
         "workouts": [],
+        "friends": ["75fedb7a8433a888c1aca57d", "95fedb7a8433a888c1aca57f"],
     }
 
 
@@ -68,6 +97,7 @@ def test_post_user_200(clean_db):
     assert response_data["name"] == "foo"
     assert response_data["email"] == "bar@email.com"
     assert response_data["workouts"] == []
+    assert response_data["friends"] == []
 
 
 def test_post_user_422_missing_property(clean_db):
@@ -112,6 +142,7 @@ def test_post_user_201_with_extra_values(clean_db):
     assert response_data["name"] == "extra_info"
     assert response_data["email"] == "bar@email.com"
     assert response_data["workouts"] == []
+    assert response_data["friends"] == []
     assert "extra_property" not in response_data
 
 
@@ -120,6 +151,7 @@ def test_update_user_201(clean_db):
         "name": "foo",
         "email": "fighter@email.com",
         "workouts": ["65fedb7a8433a888c1aca57c"],
+        "friends": ["75fedb7a8433a888c1aca57d", "95fedb7a8433a888c1aca57f"],
     }
 
     response = client.put("/api/users/85fedb7a8433a888c1aca57e", json=updated_user)
@@ -131,11 +163,12 @@ def test_update_user_201(clean_db):
         "name": "foo",
         "email": "fighter@email.com",
         "workouts": ["65fedb7a8433a888c1aca57c"],
+        "friends": ["75fedb7a8433a888c1aca57d", "95fedb7a8433a888c1aca57f"],
     }
 
 
 def test_update_user_404(clean_db):
-    updated_user = {"name": "foo", "email": "fighter@email.com", "workouts": []}
+    updated_user = {"name": "foo", "email": "fighter@email.com", "workouts": [], "friends": []}
 
     response = client.put("/api/users/85fedb7a8433a888c1aca57f", json=updated_user)
     response_data = response.json()
@@ -155,7 +188,12 @@ def test_update_user_400(clean_db):
 
 
 def test_update_user_422_invalid_property(clean_db):
-    updated_user = {"not_a_name": "foo", "email": "fighter@email.com", "workouts": []}
+    updated_user = {
+        "not_a_name": "foo",
+        "email": "fighter@email.com",
+        "workouts": [],
+        "friends": [],
+    }
 
     response = client.put("/api/users/85fedb7a8433a888c1aca57e", json=updated_user)
     response_data = response.json()
@@ -204,6 +242,7 @@ def test_update_user_201_with_ignored_value(clean_db):
         "email": "fighter@email.com",
         "extra_value": "doesnt matter",
         "workouts": ["65fedb7a8433a888c1aca57c"],
+        "friends": [],
     }
 
     response = client.put("/api/users/85fedb7a8433a888c1aca57e", json=updated_user)
@@ -215,6 +254,7 @@ def test_update_user_201_with_ignored_value(clean_db):
         "name": "foo",
         "email": "fighter@email.com",
         "workouts": ["65fedb7a8433a888c1aca57c"],
+        "friends": [],
     }
 
 
@@ -228,7 +268,17 @@ def test_delete_user_200(clean_db):
         "name": "user2",
         "email": "user2@email.com",
         "workouts": ["65fedb7a8433a888c1aca57a", "65fedb7a8433a888c1aca57b"],
+        "friends": ["65fedb7a8433a888c1aca57c", "95fedb7a8433a888c1aca57f"],
     }
+
+
+def test_deleted_user_not_in_friends_list(clean_db):
+    client.delete("/api/users/75fedb7a8433a888c1aca57d")
+    all_users = client.get("/api/users")
+    response_data = all_users.json()
+
+    for user in response_data:
+        assert "75fedb7a8433a888c1aca57d" not in user["friends"]
 
 
 def test_delete_user_404(clean_db):

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from backend.controllers.user_controller import UserController
 from backend.models.user_models.new_user import NewUser
 
@@ -6,8 +6,8 @@ router = APIRouter()
 
 
 @router.get("/users", status_code=200)
-async def get_all_users():
-    return await UserController.get_all_users()
+async def get_all_users(name: str = Query(None)):
+    return await UserController.get_all_users(name)
 
 
 @router.get("/users/{id}", status_code=200)

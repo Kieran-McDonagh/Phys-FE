@@ -5,6 +5,7 @@ class User(BaseModel):
     name: str
     email: EmailStr
     workouts: list
+    friends: list
     
     def __init__(self, **data):
         if data.get('_id'):
