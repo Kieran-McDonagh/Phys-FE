@@ -1,13 +1,13 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, EmailStr
 
 class User(BaseModel):
-    id: str = Field(alias="_id")
+    id: str
     name: str
     email: EmailStr
     workouts: list
     friends: list
     
     def __init__(self, **data):
-        if data.get('_id'):
-            data['_id'] = str(data['_id'])
+        if data.get('id'):
+            data['id'] = str(data['id'])
         super().__init__(**data)

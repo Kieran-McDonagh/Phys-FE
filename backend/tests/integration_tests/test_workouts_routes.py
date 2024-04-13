@@ -1,7 +1,6 @@
 from backend.main import app
 from fastapi.testclient import TestClient
 from bson import ObjectId
-from datetime import datetime
 
 
 client = TestClient(app)
@@ -13,9 +12,9 @@ def test_get_all_workouts_200(clean_db):
 
     assert response.status_code == 200
     for workout in response_data:
-        assert "_id" in workout
-        assert isinstance(workout["_id"], str)
-        assert ObjectId.is_valid(workout["_id"])
+        assert "id" in workout
+        assert isinstance(workout["id"], str)
+        assert ObjectId.is_valid(workout["id"])
         assert "type" in workout
         assert isinstance(workout["type"], str)
         assert "title" in workout

@@ -1,5 +1,6 @@
 from backend.main import app
 from fastapi.testclient import TestClient
+from bson import ObjectId
 
 client = TestClient(app)
 
@@ -10,8 +11,9 @@ def test_get_all_users_200(clean_db):
 
     assert response.status_code == 200
     for user in response_data:
-        assert "_id" in user
-        assert isinstance(user["_id"], str)
+        assert "id" in user
+        assert isinstance(user["id"], str)
+        assert ObjectId.is_valid(user["id"])
         assert "name" in user
         assert isinstance(user["name"], str)
         assert "email" in user
@@ -40,7 +42,7 @@ def test_get_all_users_with_name_query_200(clean_db):
     user = response_data[0]
 
     assert user == {
-        "_id": "65fedb7a8433a888c1aca57c",
+        "id": "65fedb7a8433a888c1aca57c",
         "name": "user1",
         "email": "user1@email.com",
         "workouts": [],
@@ -56,13 +58,13 @@ def test_get_all_users_with_name_query_404(clean_db):
     assert response_data == {"detail": "Users not found"}
 
 
-def test_get_user_by_id_200(clean_db):
+def test_get_user_byid_200(clean_db):
     response = client.get("/api/users/65fedb7a8433a888c1aca57c")
     response_data = response.json()
 
     assert response.status_code == 200
     assert response_data == {
-        "_id": "65fedb7a8433a888c1aca57c",
+        "id": "65fedb7a8433a888c1aca57c",
         "name": "user1",
         "email": "user1@email.com",
         "workouts": [],
@@ -70,7 +72,7 @@ def test_get_user_by_id_200(clean_db):
     }
 
 
-def test_get_user_by_id_404(clean_db):
+def test_get_user_byid_404(clean_db):
     response = client.get("/api/users/15fedb7a8433a888c1aca57c")
     response_data = response.json()
 
@@ -78,8 +80,8 @@ def test_get_user_by_id_404(clean_db):
     assert response_data == {"detail": "User not found"}
 
 
-def test_get_user_by_id_400(clean_db):
-    response = client.get("/api/users/invalid_id")
+def test_get_user_byid_400(clean_db):
+    response = client.get("/api/users/invalidid")
     response_data = response.json()
 
     assert response.status_code == 400
@@ -93,7 +95,7 @@ def test_post_user_200(clean_db):
     response_data = response.json()
 
     assert response.status_code == 201
-    assert response_data["_id"]
+    assert response_data["id"]
     assert response_data["name"] == "foo"
     assert response_data["email"] == "bar@email.com"
     assert response_data["workouts"] == []
@@ -138,7 +140,7 @@ def test_post_user_201_with_extra_values(clean_db):
     response_data = response.json()
 
     assert response.status_code == 201
-    assert response_data["_id"]
+    assert response_data["id"]
     assert response_data["name"] == "extra_info"
     assert response_data["email"] == "bar@email.com"
     assert response_data["workouts"] == []
@@ -159,7 +161,7 @@ def test_update_user_201(clean_db):
 
     assert response.status_code == 201
     assert response_data == {
-        "_id": "85fedb7a8433a888c1aca57e",
+        "id": "85fedb7a8433a888c1aca57e",
         "name": "foo",
         "email": "fighter@email.com",
         "workouts": ["65fedb7a8433a888c1aca57c"],
@@ -185,7 +187,7 @@ def test_update_user_404(clean_db):
 def test_update_user_400(clean_db):
     updated_user = {"name": "foo", "email": "fighter@email.com", "workouts": []}
 
-    response = client.put("/api/users/invalid_id", json=updated_user)
+    response = client.put("/api/users/invalidid", json=updated_user)
     response_data = response.json()
 
     assert response.status_code == 400
@@ -255,7 +257,7 @@ def test_update_user_201_with_ignored_value(clean_db):
 
     assert response.status_code == 201
     assert response_data == {
-        "_id": "85fedb7a8433a888c1aca57e",
+        "id": "85fedb7a8433a888c1aca57e",
         "name": "foo",
         "email": "fighter@email.com",
         "workouts": ["65fedb7a8433a888c1aca57c"],
@@ -269,7 +271,7 @@ def test_delete_user_200(clean_db):
 
     assert response.status_code == 200
     assert response_data == {
-        "_id": "75fedb7a8433a888c1aca57d",
+        "id": "75fedb7a8433a888c1aca57d",
         "name": "user2",
         "email": "user2@email.com",
         "workouts": ["65fedb7a8433a888c1aca57a", "65fedb7a8433a888c1aca57b"],
@@ -292,7 +294,7 @@ def test_delete_user_with_no_friends(clean_db):
 
     assert response.status_code == 200
     assert response_data == {
-        "_id": "85fedb7a8433a888c1aca57e",
+        "id": "85fedb7a8433a888c1aca57e",
         "name": "user3",
         "email": "user3@email.com",
         "workouts": ["65fedb7a8433a888c1aca57c"],
@@ -309,7 +311,7 @@ def test_delete_user_404(clean_db):
 
 
 def test_delete_user_400(clean_db):
-    response = client.delete("/api/users/invalid_id")
+    response = client.delete("/api/users/invalidid")
     response_data = response.json()
 
     assert response.status_code == 400

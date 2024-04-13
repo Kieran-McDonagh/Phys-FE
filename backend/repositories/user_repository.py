@@ -29,7 +29,7 @@ class UserRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        user = user_collection.find_one({"_id": ObjectId(id)})
+        user = user_collection.find_one({"id": ObjectId(id)})
 
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
@@ -42,7 +42,7 @@ class UserRepository:
         new_user = user_collection.insert_one(user_dict)
         inserted_id = new_user.inserted_id
         return UserModel(
-            **{**user_dict, "_id": inserted_id, "workouts": [], "friends": []}
+            **{**user_dict, "id": inserted_id, "workouts": [], "friends": []}
         )
 
     @staticmethod
@@ -52,7 +52,7 @@ class UserRepository:
 
         update_dict = dict(update)
         updated_user = user_collection.find_one_and_update(
-            {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
+            {"id": ObjectId(id)}, {"$set": update_dict}, return_document=True
         )
 
         if updated_user is None:
@@ -65,7 +65,7 @@ class UserRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        deleted_user = user_collection.find_one_and_delete({"_id": ObjectId(id)})
+        deleted_user = user_collection.find_one_and_delete({"id": ObjectId(id)})
 
         if deleted_user is None:
             raise HTTPException(status_code=404, detail="User not found")

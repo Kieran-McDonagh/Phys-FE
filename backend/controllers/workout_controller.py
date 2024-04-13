@@ -15,11 +15,6 @@ class WorkoutController:
         return workout
 
     @staticmethod
-    async def get_all_by_user_id(id):
-        workouts = await WorkoutRepository.fetch_all_by_user_id(id)
-        return workouts
-
-    @staticmethod
     async def post_workout(workout):
         new_workout = await WorkoutRepository.add_workout(workout)
         return new_workout

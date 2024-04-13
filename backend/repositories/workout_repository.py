@@ -36,7 +36,7 @@ class WorkoutRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        workout = workout_collection.find_one({"_id": ObjectId(id)})
+        workout = workout_collection.find_one({"id": ObjectId(id)})
 
         if workout is None:
             raise HTTPException(status_code=404, detail="workout not found")
@@ -44,23 +44,12 @@ class WorkoutRepository:
             return WorkoutModel(**workout)
 
     @staticmethod
-    async def fetch_all_by_user_id(id):
-        workouts_list = []
-        cursor = workout_collection.find({"author": id})
-        for document in cursor:
-            workouts_list.append(WorkoutModel(**document))
-        if len(workouts_list) > 0:
-            return workouts_list
-        else:
-            raise HTTPException(status_code=404, detail="Workouts not found")
-
-    @staticmethod
     async def add_workout(workout):
         workout_dict = dict(workout)
         workout_dict["date_created"] = datetime.now()
         new_workout = workout_collection.insert_one(workout_dict)
         inserted_id = new_workout.inserted_id
-        return WorkoutModel(**{**workout_dict, "_id": inserted_id})
+        return WorkoutModel(**{**workout_dict, "id": inserted_id})
 
     @staticmethod
     async def edit_workout(id, update):
@@ -69,7 +58,7 @@ class WorkoutRepository:
 
         update_dict = dict(update)
         updated_workout = workout_collection.find_one_and_update(
-            {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
+            {"id": ObjectId(id)}, {"$set": update_dict}, return_document=True
         )
 
         if updated_workout is None:
@@ -82,7 +71,7 @@ class WorkoutRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        deleted_workout = workout_collection.find_one_and_delete({"_id": ObjectId(id)})
+        deleted_workout = workout_collection.find_one_and_delete({"id": ObjectId(id)})
 
         if deleted_workout is None:
             raise HTTPException(status_code=404, detail="Workout not found")
