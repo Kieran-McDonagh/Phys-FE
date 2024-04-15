@@ -12,6 +12,7 @@ def test_get_all_workouts_200(clean_db):
 
     assert response.status_code == 200
     for workout in response_data:
+        assert len(workout) == 6
         assert "id" in workout
         assert isinstance(workout["id"], str)
         assert ObjectId.is_valid(workout["id"])
@@ -21,9 +22,8 @@ def test_get_all_workouts_200(clean_db):
         assert isinstance(workout["title"], str)
         assert "body" in workout
         assert isinstance(workout["body"], dict)
-        assert "author_id" in workout
-        assert isinstance(workout["author_id"], str)
-        assert ObjectId.is_valid(workout["author_id"])
+        assert "user_id" in workout
+        assert isinstance(workout["user_id"], str)
+        assert ObjectId.is_valid(workout["user_id"])
         assert "date_created" in workout
         assert isinstance(workout["date_created"], str)
-        

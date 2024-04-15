@@ -11,6 +11,7 @@ def test_get_all_users_200(clean_db):
 
     assert response.status_code == 200
     for user in response_data:
+        assert len(user) == 5
         assert "id" in user
         assert isinstance(user["id"], str)
         assert ObjectId.is_valid(user["id"])
@@ -58,7 +59,7 @@ def test_get_all_users_with_name_query_404(clean_db):
     assert response_data == {"detail": "Users not found"}
 
 
-def test_get_user_byid_200(clean_db):
+def test_get_user_by_id_200(clean_db):
     response = client.get("/api/users/65fedb7a8433a888c1aca57c")
     response_data = response.json()
 
@@ -72,7 +73,7 @@ def test_get_user_byid_200(clean_db):
     }
 
 
-def test_get_user_byid_404(clean_db):
+def test_get_user_by_id_404(clean_db):
     response = client.get("/api/users/15fedb7a8433a888c1aca57c")
     response_data = response.json()
 
@@ -80,7 +81,7 @@ def test_get_user_byid_404(clean_db):
     assert response_data == {"detail": "User not found"}
 
 
-def test_get_user_byid_400(clean_db):
+def test_get_user_by_id_400(clean_db):
     response = client.get("/api/users/invalidid")
     response_data = response.json()
 

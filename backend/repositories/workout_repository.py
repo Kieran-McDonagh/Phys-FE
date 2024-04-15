@@ -11,12 +11,12 @@ workout_collection = mongo_connection.get_collection("workouts")
 
 class WorkoutRepository:
     @staticmethod
-    async def fetch_all_workouts(author_id=None, sort_by_date_created=True):
+    async def fetch_all_workouts(user_id=None, sort_by_date_created=True):
         query = {}
-        if author_id:
-            if not ObjectId.is_valid(author_id):
+        if user_id:
+            if not ObjectId.is_valid(user_id):
                 raise HTTPException(status_code=400, detail="Invalid id")
-            query["author_id"] = author_id
+            query["user_id"] = user_id
 
         workouts_list = []
         cursor = workout_collection.find(query)
@@ -36,7 +36,7 @@ class WorkoutRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        workout = workout_collection.find_one({"id": ObjectId(id)})
+        workout = workout_collection.find_one({"_id": ObjectId(id)})
 
         if workout is None:
             raise HTTPException(status_code=404, detail="workout not found")
@@ -58,7 +58,7 @@ class WorkoutRepository:
 
         update_dict = dict(update)
         updated_workout = workout_collection.find_one_and_update(
-            {"id": ObjectId(id)}, {"$set": update_dict}, return_document=True
+            {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
         )
 
         if updated_workout is None:
@@ -71,7 +71,7 @@ class WorkoutRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        deleted_workout = workout_collection.find_one_and_delete({"id": ObjectId(id)})
+        deleted_workout = workout_collection.find_one_and_delete({"_id": ObjectId(id)})
 
         if deleted_workout is None:
             raise HTTPException(status_code=404, detail="Workout not found")

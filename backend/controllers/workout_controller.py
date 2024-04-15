@@ -3,9 +3,9 @@ from backend.repositories.workout_repository import WorkoutRepository
 
 class WorkoutController:
     @staticmethod
-    async def get_all_workouts(author_id=None, sort_by_date_created=True):
+    async def get_all_workouts(user_id=None, sort_by_date_created=True):
         workouts = await WorkoutRepository.fetch_all_workouts(
-            author_id, sort_by_date_created
+            user_id, sort_by_date_created
         )
         return workouts
 

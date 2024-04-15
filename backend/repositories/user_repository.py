@@ -29,7 +29,7 @@ class UserRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        user = user_collection.find_one({"id": ObjectId(id)})
+        user = user_collection.find_one({"_id": ObjectId(id)})
 
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
@@ -52,7 +52,7 @@ class UserRepository:
 
         update_dict = dict(update)
         updated_user = user_collection.find_one_and_update(
-            {"id": ObjectId(id)}, {"$set": update_dict}, return_document=True
+            {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
         )
 
         if updated_user is None:
@@ -65,7 +65,7 @@ class UserRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        deleted_user = user_collection.find_one_and_delete({"id": ObjectId(id)})
+        deleted_user = user_collection.find_one_and_delete({"_id": ObjectId(id)})
 
         if deleted_user is None:
             raise HTTPException(status_code=404, detail="User not found")
