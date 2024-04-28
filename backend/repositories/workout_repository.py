@@ -1,8 +1,8 @@
 from backend.database.connection import MongoConnection
 from backend.models.workout_models.workout import Workout as WorkoutModel
+from backend.services.workouts_service import WorkoutService
 from fastapi import HTTPException
 from bson import ObjectId
-from datetime import datetime
 import pymongo
 
 mongo_connection = MongoConnection()
@@ -11,7 +11,7 @@ workout_collection = mongo_connection.get_collection("workouts")
 
 class WorkoutRepository:
     @staticmethod
-    async def fetch_all_workouts(user_id=None, sort_by_date_created=True):
+    async def fetch_all_workouts(user_id=None, sort_by_date=True):
         query = {}
         if user_id:
             if not ObjectId.is_valid(user_id):
@@ -21,7 +21,7 @@ class WorkoutRepository:
         workouts_list = []
         cursor = workout_collection.find(query)
 
-        if sort_by_date_created:
+        if sort_by_date:
             cursor = cursor.sort("date_created", pymongo.DESCENDING)
 
         for document in cursor:
@@ -46,7 +46,7 @@ class WorkoutRepository:
     @staticmethod
     async def add_workout(workout):
         workout_dict = dict(workout)
-        workout_dict["date_created"] = datetime.now()
+        WorkoutService.apply_timestamp_to_new_workout(workout_dict)
         new_workout = workout_collection.insert_one(workout_dict)
         inserted_id = new_workout.inserted_id
         return WorkoutModel(**{**workout_dict, "id": inserted_id})

@@ -4,6 +4,71 @@ from bson import ObjectId
 
 client = TestClient(app)
 
+# CREATE
+
+
+def test_post_user_200(clean_db):
+    user_to_post = {"name": "foo", "email": "bar@email.com"}
+
+    response = client.post("/api/users", json=user_to_post)
+    response_data = response.json()
+
+    assert response.status_code == 201
+    assert response_data["id"]
+    assert response_data["name"] == "foo"
+    assert response_data["email"] == "bar@email.com"
+    assert response_data["workouts"] == []
+    assert response_data["friends"] == []
+
+
+def test_post_user_422_missing_property(clean_db):
+    user_to_post = {"email": "bar@email.com"}
+
+    response = client.post("/api/users", json=user_to_post)
+    response_data = response.json()
+
+    assert response.status_code == 422
+    assert response_data["detail"][0]["type"] == "missing"
+    assert response_data["detail"][0]["loc"] == ["body", "name"]
+    assert response_data["detail"][0]["msg"] == "Field required"
+
+
+def test_post_user_422_invalid_property(clean_db):
+    user_to_post = {"name": "foo", "email": "email.com"}
+
+    response = client.post("/api/users", json=user_to_post)
+    response_data = response.json()
+
+    assert response.status_code == 422
+    assert response_data["detail"][0]["type"] == "value_error"
+    assert response_data["detail"][0]["loc"] == ["body", "email"]
+    assert (
+        response_data["detail"][0]["msg"]
+        == "value is not a valid email address: The email address is not valid. It must have exactly one @-sign."
+    )
+
+
+def test_post_user_201_with_extra_values(clean_db):
+    user_to_post = {
+        "name": "extra_info",
+        "email": "bar@email.com",
+        "extra_property": "doesnt matter",
+    }
+
+    response = client.post("/api/users", json=user_to_post)
+    response_data = response.json()
+
+    assert response.status_code == 201
+    assert response_data["id"]
+    assert response_data["name"] == "extra_info"
+    assert response_data["email"] == "bar@email.com"
+    assert response_data["workouts"] == []
+    assert response_data["friends"] == []
+    assert "extra_property" not in response_data
+
+
+# READ
+
 
 def test_get_all_users_200(clean_db):
     response = client.get("/api/users")
@@ -89,64 +154,7 @@ def test_get_user_by_id_400(clean_db):
     assert response_data == {"detail": "Invalid id"}
 
 
-def test_post_user_200(clean_db):
-    user_to_post = {"name": "foo", "email": "bar@email.com"}
-
-    response = client.post("/api/users", json=user_to_post)
-    response_data = response.json()
-
-    assert response.status_code == 201
-    assert response_data["id"]
-    assert response_data["name"] == "foo"
-    assert response_data["email"] == "bar@email.com"
-    assert response_data["workouts"] == []
-    assert response_data["friends"] == []
-
-
-def test_post_user_422_missing_property(clean_db):
-    user_to_post = {"email": "bar@email.com"}
-
-    response = client.post("/api/users", json=user_to_post)
-    response_data = response.json()
-
-    assert response.status_code == 422
-    assert response_data["detail"][0]["type"] == "missing"
-    assert response_data["detail"][0]["loc"] == ["body", "name"]
-    assert response_data["detail"][0]["msg"] == "Field required"
-
-
-def test_post_user_422_invalid_property(clean_db):
-    user_to_post = {"name": "foo", "email": "email.com"}
-
-    response = client.post("/api/users", json=user_to_post)
-    response_data = response.json()
-
-    assert response.status_code == 422
-    assert response_data["detail"][0]["type"] == "value_error"
-    assert response_data["detail"][0]["loc"] == ["body", "email"]
-    assert (
-        response_data["detail"][0]["msg"]
-        == "value is not a valid email address: The email address is not valid. It must have exactly one @-sign."
-    )
-
-
-def test_post_user_201_with_extra_values(clean_db):
-    user_to_post = {
-        "name": "extra_info",
-        "email": "bar@email.com",
-        "extra_property": "doesnt matter",
-    }
-
-    response = client.post("/api/users", json=user_to_post)
-    response_data = response.json()
-
-    assert response.status_code == 201
-    assert response_data["id"]
-    assert response_data["name"] == "extra_info"
-    assert response_data["email"] == "bar@email.com"
-    assert response_data["workouts"] == []
-    assert response_data["friends"] == []
-    assert "extra_property" not in response_data
+# UPDATE
 
 
 def test_update_user_201(clean_db):
@@ -264,6 +272,9 @@ def test_update_user_201_with_ignored_value(clean_db):
         "workouts": ["65fedb7a8433a888c1aca57c"],
         "friends": [],
     }
+
+
+# DELETE
 
 
 def test_delete_user_200(clean_db):

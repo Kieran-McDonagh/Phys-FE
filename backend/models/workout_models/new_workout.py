@@ -10,7 +10,7 @@ class NewWorkout(BaseModel):
 
     @field_validator("type")
     def validate_type(cls, v):
-        valid_types = {"individual", "battlephys"}
+        valid_types = ("individual", "battlephys")
         if v not in valid_types:
             raise ValueError(f"type must be one of {valid_types}")
         return v

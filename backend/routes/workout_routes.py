@@ -7,9 +7,9 @@ router = APIRouter()
 
 @router.get("/workouts", status_code=200)
 async def get_all_workouts(
-    user_id: str = Query(None), sort_by_date_created: bool = Query(True)
+    user_id: str = Query(None), sort_by_date: bool = Query(True)
 ):
-    return await WorkoutController.get_all_workouts(user_id, sort_by_date_created)
+    return await WorkoutController.get_all_workouts(user_id, sort_by_date)
 
 
 @router.get("/workouts/{id}", status_code=200)
