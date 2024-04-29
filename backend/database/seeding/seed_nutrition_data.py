@@ -3,7 +3,7 @@ from bson import ObjectId
 nutrition_data = [
     {
         "_id": ObjectId("23fedb7a8433a888c1aca57a"),
-        "date": "2024-04-01T00:00:00.000000",
+        "date_created": "2024-04-01T01:00:00.000000",
         "body": {"chicken breast": 300, "rice": 500},
         "fat": 100,
         "protein": 100,
@@ -13,7 +13,7 @@ nutrition_data = [
     },
     {
         "_id": ObjectId("23fedb7a8433a888c1aca57b"),
-        "date": "2024-04-02T00:00:00.000000",
+        "date_created": "2024-04-02T02:00:00.000000",
         "body": {"egg": 100, "bread": 200, "milk": 100, "protein shake": 100},
         "fat": 100,
         "protein": 100,
@@ -23,7 +23,7 @@ nutrition_data = [
     },
     {
         "_id": ObjectId("23fedb7a8433a888c1aca57c"),
-        "date": "2024-04-03T00:00:00.000000",
+        "date_created": "2024-04-03T03:00:00.000000",
         "body": {},
         "fat": 0,
         "protein": 0,

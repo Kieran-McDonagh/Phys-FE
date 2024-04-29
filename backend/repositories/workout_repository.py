@@ -21,8 +21,11 @@ class WorkoutRepository:
         workouts_list = []
         cursor = workout_collection.find(query)
 
-        if sort_by_date:
-            cursor = cursor.sort("date_created", pymongo.DESCENDING)
+        cursor = (
+            cursor.sort("date_created", pymongo.DESCENDING)
+            if sort_by_date
+            else cursor.sort("date_created", pymongo.ASCENDING)
+        )
 
         for document in cursor:
             workouts_list.append(WorkoutModel(**document))
