@@ -1,4 +1,4 @@
-# BattlePhys
+# BattlePhys (**In Development**)
 
 ## Getting Started
 
@@ -12,7 +12,7 @@ To get the project running on your machine, follow these steps:
    ```
 3. Install required dependencies: cd into backend, then `pip install -r requirements.txt`
 
-4. Create a `.env` file to put your mongo uri's in.
+4. Create a `.env` file to store your mongo uri's.
 
 ## Running Integration Tests
 
