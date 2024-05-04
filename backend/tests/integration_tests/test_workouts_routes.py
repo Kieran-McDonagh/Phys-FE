@@ -1,7 +1,6 @@
 from backend.main import app
 from fastapi.testclient import TestClient
 from bson import ObjectId
-from datetime import datetime
 
 
 client = TestClient(app)
@@ -34,6 +33,27 @@ def test_post_workout_201(clean_db):
         "exercise 3": "30",
     }
     assert response_data["user_id"] == "75fedb7a8433a888c1aca57d"
+
+    user_to_check = client.get("/api/users/75fedb7a8433a888c1aca57d")
+    user_data = user_to_check.json()
+
+    assert response_data["id"] in user_data["workouts"]
+
+
+def test_post_workout_404(clean_db):
+    workout_to_post = {
+        "type": "individual",
+        "title": "test post workout",
+        "body": {"exercise 1": "10", "exercise 2": "20", "exercise 3": "30"},
+        "user_id": "38bedb7a8433a888c1aca57e",
+    }
+    response = client.post("/api/workouts", json=workout_to_post)
+    response_data = response.json()
+
+    assert response.status_code == 500
+    assert response_data == {
+        "detail": "Failed to add workout to user, 500: Failed to apply workout ID to user: 404: User not found"
+    }
 
 
 def test_post_workout_422_missing_property(clean_db):

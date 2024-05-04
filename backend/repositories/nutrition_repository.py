@@ -51,9 +51,15 @@ class NutritionRepository:
     async def add_nutrition(nutrition):
         nutrition_dict = dict(nutrition)
         NutritionService.apply_timestamp_to_nutrition(nutrition_dict)
+        try:
+            NutritionService.calculate_total_calories(nutrition_dict)
+        except Exception as e:
+            raise HTTPException(
+                status_code=422, detail=f"Failed to calculate total calories, {e}"
+            )
         new_nutrition = nutrition_collection.insert_one(nutrition_dict)
         inserted_id = new_nutrition.inserted_id
-        NutritionService.calculate_total_calories(nutrition_dict)
+
         return NutritionModel(**{**nutrition_dict, "id": inserted_id})
 
     @staticmethod
@@ -62,6 +68,12 @@ class NutritionRepository:
             raise HTTPException(status_code=400, detail="Invalid id")
 
         update_dict = dict(update)
+        try:
+            NutritionService.calculate_total_calories(update_dict)
+        except Exception as e:
+            raise HTTPException(
+                status_code=422, detail=f"Failed to calculate total calories, {e}"
+            )
         updated_nutrition = nutrition_collection.find_one_and_update(
             {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
         )
@@ -69,7 +81,6 @@ class NutritionRepository:
         if updated_nutrition is None:
             raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
-            NutritionService.calculate_total_calories(updated_nutrition)
             return NutritionModel(**updated_nutrition)
 
     @staticmethod

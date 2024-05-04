@@ -65,10 +65,17 @@ class UserRepository:
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
+        try:
+            await UserService.remove_user_from_all_friends_lists(user_collection, id)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to remove deleted user from friends lists, {e}",
+            )
+
         deleted_user = user_collection.find_one_and_delete({"_id": ObjectId(id)})
 
         if deleted_user is None:
             raise HTTPException(status_code=404, detail="User not found")
         else:
-            await UserService.remove_user_from_all_friends_lists(user_collection, id)
             return UserModel(**deleted_user)

@@ -7,6 +7,7 @@ import pymongo
 
 mongo_connection = MongoConnection()
 workout_collection = mongo_connection.get_collection("workouts")
+user_collection = mongo_connection.get_collection("users")
 
 
 class WorkoutRepository:
@@ -52,6 +53,15 @@ class WorkoutRepository:
         WorkoutService.apply_timestamp_to_new_workout(workout_dict)
         new_workout = workout_collection.insert_one(workout_dict)
         inserted_id = new_workout.inserted_id
+        try:
+            WorkoutService.apply_workout_id_to_user(
+                user_collection, inserted_id, workout.user_id
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to add workout to user, {e}",
+            )
         return WorkoutModel(**{**workout_dict, "id": inserted_id})
 
     @staticmethod

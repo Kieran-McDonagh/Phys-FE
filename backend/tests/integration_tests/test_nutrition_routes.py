@@ -88,6 +88,23 @@ def test_post_nutrition_422_invalid_data_type(clean_db):
     )
 
 
+def test_post_nutrition_422_invalid_body_values(clean_db):
+    data_to_post = {
+        "fat": "1",
+        "carbs": 2,
+        "protein": 3,
+        "body": {"food 1": "banana", "food 2": 20},
+        "user_id": "75fedb7a8433a888c1aca57d",
+    }
+    response = client.post("/api/nutrition", json=data_to_post)
+    response_data = response.json()
+
+    assert response.status_code == 422
+    assert response_data == {
+        "detail": "Failed to calculate total calories, Invalid input: values in 'body' dictionary must be convertible to integers"
+    }
+
+
 def test_post_nutrition_422_invalid_user_id(clean_db):
     data_to_post = {
         "fat": 1,
@@ -421,6 +438,26 @@ def test_update_nutrition_422_invalid_data_type(clean_db):
         response_data["detail"][0]["msg"]
         == "Input should be a valid integer, unable to parse string as an integer"
     )
+
+
+def test_update_nutrition_400_invalid_body_values(clean_db):
+    updated_nutrition = {
+        "body": {"chicken breast": "banana", "rice": 501},
+        "fat": 101,
+        "protein": 102,
+        "carbs": 103,
+        "user_id": "75fedb7a8433a888c1aca57d",
+    }
+
+    response = client.put(
+        "/api/nutrition/23fedb7a8433a888c1aca57a", json=updated_nutrition
+    )
+    response_data = response.json()
+
+    assert response.status_code == 422
+    assert response_data == {
+        "detail": "Failed to calculate total calories, Invalid input: values in 'body' dictionary must be convertible to integers"
+    }
 
 
 # DELETE
