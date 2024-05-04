@@ -21,3 +21,8 @@ class NutritionController:
     async def update_nutrition(id, update):
         response = await NutritionRepository.edit_nutrition(id, update)
         return response
+    
+    @staticmethod
+    async def delete_nutrition(id):
+        response = await NutritionRepository.remove_nutrition(id)
+        return response

@@ -67,7 +67,21 @@ class NutritionRepository:
         )
 
         if updated_nutrition is None:
-            raise HTTPException(status_code=404, detail="Nutrition not found")
+            raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
             NutritionService.calculate_total_calories(updated_nutrition)
             return NutritionModel(**updated_nutrition)
+
+    @staticmethod
+    async def remove_nutrition(id):
+        if not ObjectId.is_valid(id):
+            raise HTTPException(status_code=400, detail="Invalid id")
+
+        deleted_nutrition = nutrition_collection.find_one_and_delete(
+            {"_id": ObjectId(id)}
+        )
+
+        if deleted_nutrition is None:
+            raise HTTPException(status_code=404, detail="Nutrition data not found")
+        else:
+            return NutritionModel(**deleted_nutrition)
