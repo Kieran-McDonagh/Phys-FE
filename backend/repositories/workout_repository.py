@@ -60,7 +60,7 @@ class WorkoutRepository:
         except Exception as e:
             raise HTTPException(
                 status_code=500,
-                detail=f"Failed to add workout to user, {e}",
+                detail=f"Failed to add workout id to user, {e}",
             )
         return WorkoutModel(**{**workout_dict, "id": inserted_id})
 
@@ -89,4 +89,13 @@ class WorkoutRepository:
         if deleted_workout is None:
             raise HTTPException(status_code=404, detail="Workout not found")
         else:
+            try:
+                WorkoutService.remove_workout_id_from_user(
+                    user_collection, id, deleted_workout["user_id"]
+                )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to remove workout id from user, {e}",
+                )
             return WorkoutModel(**deleted_workout)

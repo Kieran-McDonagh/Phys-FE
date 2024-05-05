@@ -14,7 +14,7 @@ workouts_data = [
         "type": "individual",
         "title": "title 2",
         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
-        "user_id": "75fedb7a8433a888c1aca57d",
+        "user_id": "75fedb7a8433a888c1aca25a",
         "date_created": "2024-04-05T19:00:00.000000",
     },
     {

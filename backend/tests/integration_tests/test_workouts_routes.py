@@ -40,7 +40,7 @@ def test_post_workout_201(clean_db):
     assert response_data["id"] in user_data["workouts"]
 
 
-def test_post_workout_404(clean_db):
+def test_post_workout_500(clean_db):
     workout_to_post = {
         "type": "individual",
         "title": "test post workout",
@@ -52,7 +52,7 @@ def test_post_workout_404(clean_db):
 
     assert response.status_code == 500
     assert response_data == {
-        "detail": "Failed to add workout to user, 500: Failed to apply workout ID to user: 404: User not found"
+        "detail": "Failed to add workout id to user, 500: 404: User not found"
     }
 
 
@@ -349,7 +349,7 @@ def test_update_workout_422_invalid_property(clean_db):
     assert response_data["detail"][0]["msg"] == "Input should be a valid dictionary"
 
 
-# DELETE
+# # DELETE
 
 
 def test_delete_workout_200(clean_db):
@@ -366,6 +366,11 @@ def test_delete_workout_200(clean_db):
         "date_created": "2024-04-05T20:00:00",
     }
 
+    user = client.get("/api/users/85fedb7a8433a888c1aca57e")
+    user_data = user.json()
+
+    assert response_data["id"] not in user_data["workouts"]
+
 
 def test_delete_workout_404(clean_db):
     response = client.delete("api/workouts/13fedb7a8433a888c1aca57c")
@@ -381,3 +386,13 @@ def test_delete_workout_400(clean_db):
 
     assert response.status_code == 400
     assert response_data == {"detail": "Invalid id"}
+
+
+def test_delete_workout_500(clean_db):
+    response = client.delete("api/workouts/65fedb7a8433a888c1aca57b")
+    response_data = response.json()
+
+    assert response.status_code == 500
+    assert response_data == {
+        "detail": "Failed to remove workout id from user, 500: 404: User not found"
+    }

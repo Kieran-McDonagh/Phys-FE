@@ -27,5 +27,24 @@ class WorkoutService:
         except Exception as e:
             raise HTTPException(
                 status_code=500,
-                detail=f"Failed to apply workout ID to user: {e}",
+                detail=f"{e}",
+            )
+
+    @staticmethod
+    def remove_workout_id_from_user(collection, workout_id, user_id):
+        try:
+            updated_user = collection.find_one_and_update(
+                {"_id": ObjectId(user_id)},
+                {"$pull": {"workouts": str(workout_id)}},
+                return_document=True,
+            )
+            if updated_user is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail="User not found",
+                )
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"{e}",
             )
