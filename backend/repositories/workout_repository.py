@@ -48,14 +48,15 @@ class WorkoutRepository:
             return WorkoutModel(**workout)
 
     @staticmethod
-    async def add_workout(workout):
+    async def add_workout(workout, current_user):
         workout_dict = dict(workout)
+        workout_dict["user_id"] = current_user.id
         WorkoutService.apply_timestamp_to_new_workout(workout_dict)
         new_workout = workout_collection.insert_one(workout_dict)
         inserted_id = new_workout.inserted_id
         try:
             WorkoutService.apply_workout_id_to_user(
-                user_collection, inserted_id, workout.user_id
+                user_collection, inserted_id, current_user.id
             )
         except Exception as e:
             raise HTTPException(

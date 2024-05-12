@@ -6,8 +6,7 @@ from bson import ObjectId
 import pymongo
 
 
-mongo_connection = MongoConnection()
-nutrition_collection = mongo_connection.get_collection("nutrition")
+nutrition_collection = MongoConnection().get_collection("nutrition")
 
 
 class NutritionRepository:

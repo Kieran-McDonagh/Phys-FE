@@ -1,6 +1,11 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
+from typing import Annotated
+
 from backend.controllers.workout_controller import WorkoutController
 from backend.models.workout_models.new_workout import NewWorkout
+from backend.models.user_models.new_user import NewUser as User
+from backend.security.authentication import Authenticate
+
 
 router = APIRouter()
 
@@ -18,8 +23,9 @@ async def get_workout_by_id(id: str):
 
 
 @router.post("/workouts", status_code=201)
-async def post_workout(workout: NewWorkout):
-    return await WorkoutController.post_workout(workout)
+async def post_workout(workout: NewWorkout, current_user: User = Depends(Authenticate.get_current_active_user)):
+    return await WorkoutController.post_workout(workout, current_user)
+
 
 
 @router.put("/workouts/{id}", status_code=201)

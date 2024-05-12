@@ -3,8 +3,8 @@ from backend.repositories.user_repository import UserRepository
 
 class UserController:
     @staticmethod
-    async def get_all_users(name=None):
-        users = await UserRepository.fetch_all_users(name)
+    async def get_all_users(username=None):
+        users = await UserRepository.fetch_all_users(username)
         return users
 
     @staticmethod
