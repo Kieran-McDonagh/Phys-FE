@@ -1,5 +1,5 @@
 from backend.database.connection import MongoConnection
-from backend.models.nutrition_models.nutrition_model import NutritionModel
+from backend.models.nutrition_models.nutrition import Nutrition
 from backend.services.nutrition_service import NutritionService
 from fastapi import HTTPException
 from bson import ObjectId
@@ -28,7 +28,7 @@ class NutritionRepository:
         )
 
         for document in cursor:
-            nutrition_list.append(NutritionModel(**document))
+            nutrition_list.append(Nutrition(**document))
         if len(nutrition_list) > 0:
             return nutrition_list
         else:
@@ -44,11 +44,12 @@ class NutritionRepository:
         if data is None:
             raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
-            return NutritionModel(**data)
+            return Nutrition(**data)
 
     @staticmethod
-    async def add_nutrition(nutrition):
+    async def add_nutrition(nutrition, current_user):
         nutrition_dict = dict(nutrition)
+        nutrition_dict['user_id'] = current_user.id
         NutritionService.apply_timestamp_to_nutrition(nutrition_dict)
         try:
             NutritionService.calculate_total_calories(nutrition_dict)
@@ -59,7 +60,7 @@ class NutritionRepository:
         new_nutrition = nutrition_collection.insert_one(nutrition_dict)
         inserted_id = new_nutrition.inserted_id
 
-        return NutritionModel(**{**nutrition_dict, "id": inserted_id})
+        return Nutrition(**{**nutrition_dict, "id": inserted_id})
 
     @staticmethod
     async def edit_nutrition(id, update):
@@ -80,7 +81,7 @@ class NutritionRepository:
         if updated_nutrition is None:
             raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
-            return NutritionModel(**updated_nutrition)
+            return Nutrition(**updated_nutrition)
 
     @staticmethod
     async def remove_nutrition(id):
@@ -94,4 +95,4 @@ class NutritionRepository:
         if deleted_nutrition is None:
             raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
-            return NutritionModel(**deleted_nutrition)
+            return Nutrition(**deleted_nutrition)

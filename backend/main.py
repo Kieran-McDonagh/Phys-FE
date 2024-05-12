@@ -6,11 +6,7 @@ from backend.routes.user_routes import router as user_router
 from backend.routes.workout_routes import router as workout_router
 from backend.routes.nutrition_routes import router as nutrition_router
 from backend.routes.login import router as login_router
-
-from backend.models.user_models.new_user import NewUser as User
-from backend.models.user_models.user import User as UserInDB
 from backend.security.authentication import Authenticate
-from typing import Annotated
 
 
 app = FastAPI()

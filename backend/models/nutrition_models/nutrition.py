@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class NutritionModel(BaseModel):
+class Nutrition(BaseModel):
     id: str
     date_created: datetime
     fat: int

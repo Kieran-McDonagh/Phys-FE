@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from backend.controllers.nutrition_controller import NutritionController
-from backend.models.nutrition_models.new_nutrition_model import NewNutrition
+from backend.models.nutrition_models.new_nutrition import NewNutrition
+from backend.models.user_models.user import User
+from backend.security.authentication import Authenticate
 
 router = APIRouter()
 
@@ -16,8 +18,11 @@ async def get_by_id(id: str):
 
 
 @router.post("/nutrition", status_code=201)
-async def post_nutrition(nutrition: NewNutrition):
-    return await NutritionController.post_nutrition(nutrition)
+async def post_nutrition(
+    nutrition: NewNutrition,
+    current_user: User = Depends(Authenticate.get_current_active_user),
+):
+    return await NutritionController.post_nutrition(nutrition, current_user)
 
 
 @router.put("/nutrition/{id}", status_code=200)

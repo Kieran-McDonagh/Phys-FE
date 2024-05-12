@@ -13,9 +13,3 @@ class NewWorkout(BaseModel):
         if v not in valid_types:
             raise ValueError(f"type must be one of {valid_types}")
         return v
-
-    # @field_validator("user_id")
-    # def validate_user_id(cls, v):
-    #     if not ObjectId.is_valid(v):
-    #         raise ValueError("user_id must be a valid MongoDB ObjectId")
-    #     return str(v)
