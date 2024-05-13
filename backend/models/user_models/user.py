@@ -4,6 +4,7 @@ class User(BaseModel):
     id: str
     email: EmailStr
     workouts: list
+    nutrition: list
     friends: list
     username: str
     full_name: str

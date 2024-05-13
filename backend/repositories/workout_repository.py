@@ -1,6 +1,7 @@
 from backend.database.connection import MongoConnection
 from backend.models.workout_models.workout import Workout as WorkoutModel
-from backend.services.workouts_service import WorkoutService
+from backend.services.timestamp_service import TimestampService
+from backend.services.user_service import UserService
 from fastapi import HTTPException
 from bson import ObjectId
 import pymongo
@@ -51,12 +52,12 @@ class WorkoutRepository:
     async def add_workout(workout, current_user):
         workout_dict = dict(workout)
         workout_dict["user_id"] = current_user.id
-        WorkoutService.apply_timestamp_to_new_workout(workout_dict)
+        TimestampService.apply_timestamp_to_document(workout_dict)
         new_workout = workout_collection.insert_one(workout_dict)
         inserted_id = new_workout.inserted_id
         try:
-            WorkoutService.apply_workout_id_to_user(
-                user_collection, inserted_id, current_user.id
+            UserService.apply_document_id_to_user(
+                user_collection, inserted_id, current_user.id, "workouts"
             )
         except Exception as e:
             raise HTTPException(
@@ -81,18 +82,26 @@ class WorkoutRepository:
             return WorkoutModel(**updated_workout)
 
     @staticmethod
-    async def remove_workout(id):
+    async def remove_workout(id, current_user):
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
 
-        deleted_workout = workout_collection.find_one_and_delete({"_id": ObjectId(id)})
+        if id in current_user.workouts:
+            deleted_workout = workout_collection.find_one_and_delete(
+                {"_id": ObjectId(id)}
+            )
+        else:
+            raise HTTPException(
+                status_code=401,
+                detail="Not authorised to delete user",
+            )
 
         if deleted_workout is None:
             raise HTTPException(status_code=404, detail="Workout not found")
         else:
             try:
-                WorkoutService.remove_workout_id_from_user(
-                    user_collection, id, deleted_workout["user_id"]
+                UserService.remove_document_id_from_user(
+                    user_collection, id, deleted_workout["user_id"], "workouts"
                 )
             except Exception as e:
                 raise HTTPException(

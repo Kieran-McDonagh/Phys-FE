@@ -1,12 +1,16 @@
 from backend.database.connection import MongoConnection
 from backend.models.nutrition_models.nutrition import Nutrition
 from backend.services.nutrition_service import NutritionService
+from backend.services.user_service import UserService
+from backend.services.timestamp_service import TimestampService
 from fastapi import HTTPException
 from bson import ObjectId
 import pymongo
 
 
-nutrition_collection = MongoConnection().get_collection("nutrition")
+mongo_connection = MongoConnection()
+nutrition_collection = mongo_connection.get_collection("nutrition")
+user_collection = mongo_connection.get_collection("users")
 
 
 class NutritionRepository:
@@ -49,16 +53,27 @@ class NutritionRepository:
     @staticmethod
     async def add_nutrition(nutrition, current_user):
         nutrition_dict = dict(nutrition)
-        nutrition_dict['user_id'] = current_user.id
-        NutritionService.apply_timestamp_to_nutrition(nutrition_dict)
+        nutrition_dict["user_id"] = current_user.id
+        TimestampService.apply_timestamp_to_document(nutrition_dict)
         try:
             NutritionService.calculate_total_calories(nutrition_dict)
         except Exception as e:
             raise HTTPException(
                 status_code=422, detail=f"Failed to calculate total calories, {e}"
             )
+
         new_nutrition = nutrition_collection.insert_one(nutrition_dict)
         inserted_id = new_nutrition.inserted_id
+
+        try:
+            UserService.apply_document_id_to_user(
+                user_collection, inserted_id, current_user.id, "nutrition"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to add nutrition data id to user, {e}",
+            )
 
         return Nutrition(**{**nutrition_dict, "id": inserted_id})
 
@@ -95,4 +110,13 @@ class NutritionRepository:
         if deleted_nutrition is None:
             raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
+            try:
+                UserService.remove_document_id_from_user(
+                    user_collection, id, deleted_nutrition["user_id"], "nutrition"
+                )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to remove nutrition data id from user, {e}",
+                )
             return Nutrition(**deleted_nutrition)

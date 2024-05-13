@@ -34,5 +34,7 @@ async def update_workout_by_id(id: str, updated_workout: NewWorkout):
 
 
 @router.delete("/workouts/{id}", status_code=200)
-async def delete_workout_by_id(id: str):
-    return await WorkoutController.delete_workout(id)
+async def delete_workout_by_id(
+    id: str, current_user: User = Depends(Authenticate.get_current_active_user)
+):
+    return await WorkoutController.delete_workout(id, current_user)

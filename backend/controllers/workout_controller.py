@@ -25,6 +25,6 @@ class WorkoutController:
         return updated_workout
 
     @staticmethod
-    async def delete_workout(id):
-        deleted_workout = await WorkoutRepository.remove_workout(id)
+    async def delete_workout(id, current_user):
+        deleted_workout = await WorkoutRepository.remove_workout(id, current_user)
         return deleted_workout
