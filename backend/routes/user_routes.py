@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Query, Depends
 from backend.controllers.user_controller import UserController
+from backend.models.user_models.editable_user import EditableUser
 from backend.models.user_models.new_user import NewUser
 from backend.security.authentication import Authenticate
 
@@ -35,7 +36,7 @@ async def post_user(user: NewUser):
     status_code=201,
     dependencies=[Depends(Authenticate.get_current_active_user)],
 )
-async def update_user_by_id(id: str, updated_user: NewUser):
+async def update_user_by_id(id: str, updated_user: EditableUser):
     return await UserController.update_user(id, updated_user)
 
 

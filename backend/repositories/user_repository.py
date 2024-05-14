@@ -14,7 +14,7 @@ class UserRepository:
     async def fetch_all_users(username=None):
         query = {}
         if username:
-            query["username"] = name
+            query["username"] = username
 
         users_list = []
         cursor = user_collection.find(query)
@@ -56,6 +56,10 @@ class UserRepository:
         new_user = user.dict()
         new_user["hashed_password"] = hashed_password
         del new_user["password"]
+        new_user["workouts"] = []
+        new_user["nutrition"] = []
+        new_user["friends"] = []
+        new_user["disabled"] = False
         user_collection.insert_one(new_user)
 
         return {"message": "User registered successfully"}

@@ -107,30 +107,35 @@ def test_get_all_users_401(clean_db, test_client):
     assert response_data == {"detail": "Not authenticated"}
 
 
-# def test_get_all_users_404(empty_db):
-#     response = client.get("/api/users")
+# def test_get_all_users_404(empty_db, authorised_test_client):
+#     response = authorised_test_client.get("/api/users")
 #     response_data = response.json()
+#     print(response_data)
 
 #     assert response.status_code == 404
 #     assert response_data == {"detail": "Users not found"}
 
 
-# def test_get_all_users_with_name_query_200(clean_db):
-#     response = client.get("/api/users?name=user1")
-#     response_data = response.json()
+def test_get_all_users_with_name_query_200(clean_db, authorised_test_client):
+    response = authorised_test_client.get("/api/users?username=user1")
+    response_data = response.json()
 
-#     assert response.status_code == 200
-#     assert len(response_data) == 1
+    assert response.status_code == 200
+    assert len(response_data) == 1
 
-#     user = response_data[0]
+    user = response_data[0]
 
-#     assert user == {
-#         "id": "65fedb7a8433a888c1aca57c",
-#         "name": "user1",
-#         "email": "user1@email.com",
-#         "workouts": [],
-#         "friends": ["75fedb7a8433a888c1aca57d", "95fedb7a8433a888c1aca57f"],
-#     }
+    assert user == {
+        "id": "65fedb7a8433a888c1aca57c",
+        "email": "user1@email.com",
+        "workouts": [],
+        "nutrition": [],
+        "friends": ["75fedb7a8433a888c1aca57d", "95fedb7a8433a888c1aca57f"],
+        "username": "user1",
+        "full_name": "test name 1",
+        "disabled": False,
+        "hashed_password": "$2b$12$u7qTSdNfDzvFtAscVCmXH.cji.RiPbU5CVxJl1Eb.zzUAGG5USegW",
+    }
 
 
 # def test_get_all_users_with_name_query_404(clean_db):
