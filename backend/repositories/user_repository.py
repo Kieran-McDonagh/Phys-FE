@@ -41,8 +41,7 @@ class UserRepository:
     async def fetch_by_username(username):
         user = user_collection.find_one({"username": username})
         if user:
-            user_dict = dict(user)
-            return UserModel(**user_dict)
+            return UserModel(**user)
 
     @staticmethod
     async def add_user(user):
@@ -53,21 +52,22 @@ class UserRepository:
             return {"message": "Username or email already exists"}
 
         hashed_password = SecurityService.get_password_hash(user.password)
-        new_user = user.dict()
-        new_user["hashed_password"] = hashed_password
-        del new_user["password"]
-        new_user["workouts"] = []
-        new_user["nutrition"] = []
-        new_user["friends"] = []
-        new_user["disabled"] = False
-        user_collection.insert_one(new_user)
-
-        return {"message": "User registered successfully"}
+        user_dict = user.dict(exclude={"password"})
+        user_dict["hashed_password"] = hashed_password
+        user_dict["workouts"] = []
+        user_dict["nutrition"] = []
+        user_dict["friends"] = []
+        user_dict["disabled"] = False
+        new_user = user_collection.insert_one(user_dict)
+        inserted_id = new_user.inserted_id
+        return UserModel(
+            **{**user_dict, "id": inserted_id, "workouts": [], "friends": []}
+        )
 
     @staticmethod
-    async def edit_user(id, update):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
+    async def edit_user(id, update, current_user):
+        if id != current_user.id:
+            raise HTTPException(status_code=401, detail="Cannot edit other users")
 
         update_dict = dict(update)
         updated_user = user_collection.find_one_and_update(
@@ -80,9 +80,9 @@ class UserRepository:
             return UserModel(**updated_user)
 
     @staticmethod
-    async def remove_user(id):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
+    async def remove_user(id, current_user):
+        if id != current_user.id:
+            raise HTTPException(status_code=401, detail="Cannot delete other users")
 
         try:
             await UserService.remove_user_from_all_friends_lists(user_collection, id)

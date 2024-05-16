@@ -3,6 +3,7 @@ from backend.controllers.user_controller import UserController
 from backend.models.user_models.editable_user import EditableUser
 from backend.models.user_models.new_user import NewUser
 from backend.security.authentication import Authenticate
+from backend.models.user_models.user import User
 
 
 router = APIRouter()
@@ -36,8 +37,8 @@ async def post_user(user: NewUser):
     status_code=201,
     dependencies=[Depends(Authenticate.get_current_active_user)],
 )
-async def update_user_by_id(id: str, updated_user: EditableUser):
-    return await UserController.update_user(id, updated_user)
+async def update_user_by_id(id: str, updated_user: EditableUser, current_user: User = Depends(Authenticate.get_current_active_user)):
+    return await UserController.update_user(id, updated_user, current_user)
 
 
 @router.delete(
@@ -45,5 +46,5 @@ async def update_user_by_id(id: str, updated_user: EditableUser):
     status_code=200,
     dependencies=[Depends(Authenticate.get_current_active_user)],
 )
-async def delete_user_by_id(id: str):
-    return await UserController.delete_user(id)
+async def delete_user_by_id(id: str, current_user: User = Depends(Authenticate.get_current_active_user)):
+    return await UserController.delete_user(id, current_user)

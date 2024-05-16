@@ -32,13 +32,13 @@ def empty_db():
 
 
 @pytest.fixture(scope="function")
-def test_client():
+def client():
     test_client = TestClient(app)
     return test_client
 
 
 @pytest.fixture(scope="function")
-def authorised_test_client(test_client):
+def authorised_test_client(client):
     user_to_post = {
         "username": "test user",
         "email": "test_user@email.com",
@@ -46,13 +46,14 @@ def authorised_test_client(test_client):
         "full_name": "test user",
     }
 
-    test_client.post("/api/users", json=user_to_post)
+    response = client.post("/api/users", json=user_to_post)
+    authorised_user = response.json()
 
     login_data = {"username": "test user", "password": "test password"}
-    login_response = test_client.post("/token", data=login_data)
+    login_response = client.post("/token", data=login_data)
     assert login_response.status_code == 200
     access_token = login_response.json()["access_token"]
 
-    test_client.headers.update({"Authorization": f"Bearer {access_token}"})
+    client.headers.update({"Authorization": f"Bearer {access_token}"})
 
-    return test_client
+    return client, authorised_user
