@@ -20,8 +20,8 @@ class WorkoutController:
         return new_workout
 
     @staticmethod
-    async def update_workout(id, update):
-        updated_workout = await WorkoutRepository.edit_workout(id, update)
+    async def update_workout(id, update, current_user):
+        updated_workout = await WorkoutRepository.edit_workout(id, update, current_user)
         return updated_workout
 
     @staticmethod

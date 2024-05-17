@@ -67,9 +67,9 @@ class WorkoutRepository:
         return WorkoutModel(**{**workout_dict, "id": inserted_id})
 
     @staticmethod
-    async def edit_workout(id, update):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
+    async def edit_workout(id, update, current_user):
+        if id not in current_user.workouts:
+            raise HTTPException(status_code=401, detail="Cannot edit other users workouts")
 
         update_dict = dict(update)
         updated_workout = workout_collection.find_one_and_update(
@@ -83,8 +83,8 @@ class WorkoutRepository:
 
     @staticmethod
     async def remove_workout(id, current_user):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
+        if id not in current_user.workouts:
+            raise HTTPException(status_code=401, detail="Cannot delete other users workouts")
 
         if id in current_user.workouts:
             deleted_workout = workout_collection.find_one_and_delete(

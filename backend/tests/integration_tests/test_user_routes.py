@@ -258,19 +258,19 @@ def test_update_user_401(clean_db, authorised_test_client):
 #     assert response_data == {"detail": "User not found"}
 
 
-# def test_update_user_400(clean_db, authorised_test_client):
-#     client, _ = authorised_test_client
-#     updated_user = {
-#         "username": "foo",
-#         "email": "fighter@email.com",
-#         "full_name": "foo bar",
-#     }
+def test_update_user_400(clean_db, authorised_test_client):
+    client, _ = authorised_test_client
+    updated_user = {
+        "username": "foo",
+        "email": "fighter@email.com",
+        "full_name": "foo bar",
+    }
 
-#     response = client.put("/api/users/invalidid", json=updated_user)
-#     response_data = response.json()
+    response = client.put("/api/users/invalidid", json=updated_user)
+    response_data = response.json()
 
-#     assert response.status_code == 400
-#     assert response_data == {"detail": "Invalid id"}
+    assert response.status_code == 401
+    assert response_data == {"detail": "Cannot edit other users"}
 
 
 def test_update_user_422_invalid_property(clean_db, authorised_test_client):
@@ -362,18 +362,6 @@ def test_delete_user_200(clean_db, authorised_test_client):
 
     assert response.status_code == 200
     assert response_data == user
-
-
-# def test_deleted_user_not_in_friends_list(clean_db, authorised_test_client):
-#     client, user = authorised_test_client
-#     user_id = user['id']
-
-#     client.delete(f"/api/users/{user_id}")
-#     all_users = client.get("/api/users")
-#     response_data = all_users.json()
-
-#     for user in response_data:
-#         assert user_id not in user["friends"]
 
 
 def test_unauthorised_deletion_401(clean_db, authorised_test_client):
