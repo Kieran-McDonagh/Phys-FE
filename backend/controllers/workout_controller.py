@@ -15,16 +15,16 @@ class WorkoutController:
         return workout
 
     @staticmethod
-    async def post_workout(workout):
-        new_workout = await WorkoutRepository.add_workout(workout)
+    async def post_workout(workout, current_user):
+        new_workout = await WorkoutRepository.add_workout(workout, current_user)
         return new_workout
 
     @staticmethod
-    async def update_workout(id, update):
-        updated_workout = await WorkoutRepository.edit_workout(id, update)
+    async def update_workout(id, update, current_user):
+        updated_workout = await WorkoutRepository.edit_workout(id, update, current_user)
         return updated_workout
 
     @staticmethod
-    async def delete_workout(id):
-        deleted_workout = await WorkoutRepository.remove_workout(id)
+    async def delete_workout(id, current_user):
+        deleted_workout = await WorkoutRepository.remove_workout(id, current_user)
         return deleted_workout

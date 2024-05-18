@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class NutritionModel(BaseModel):
+class Nutrition(BaseModel):
     id: str
     date_created: datetime
     fat: int
@@ -13,6 +13,6 @@ class NutritionModel(BaseModel):
     total_calories: int
 
     def __init__(self, **data):
-        if data.get('_id'):
-            data['id'] = str(data['_id'])
+        if data.get("_id"):
+            data["id"] = str(data["_id"])
         super().__init__(**data)

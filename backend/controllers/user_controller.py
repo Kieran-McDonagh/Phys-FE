@@ -3,8 +3,8 @@ from backend.repositories.user_repository import UserRepository
 
 class UserController:
     @staticmethod
-    async def get_all_users(name=None):
-        users = await UserRepository.fetch_all_users(name)
+    async def get_all_users(username=None):
+        users = await UserRepository.fetch_all_users(username)
         return users
 
     @staticmethod
@@ -18,11 +18,11 @@ class UserController:
         return new_user
 
     @staticmethod
-    async def update_user(id, update):
-        updated_user = await UserRepository.edit_user(id, update)
+    async def update_user(id, update, current_user):
+        updated_user = await UserRepository.edit_user(id, update, current_user)
         return updated_user
 
     @staticmethod
-    async def delete_user(id):
-        deleted_user = await UserRepository.remove_user(id)
+    async def delete_user(id, current_user):
+        deleted_user = await UserRepository.remove_user(id, current_user)
         return deleted_user
