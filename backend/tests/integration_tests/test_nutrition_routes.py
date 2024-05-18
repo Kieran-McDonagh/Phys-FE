@@ -10,7 +10,7 @@ client = TestClient(app)
 
 def test_post_nutrition_200(clean_db, authorised_test_client):
     client, user = authorised_test_client
-    user_id = user['id']
+    user_id = user["id"]
     data_to_post = {
         "fat": 1,
         "carbs": 2,
@@ -107,7 +107,7 @@ def test_post_nutrition_422_invalid_body_values(clean_db, authorised_test_client
 
     assert response.status_code == 422
     assert response_data == {
-        "detail": "Failed to calculate total calories, Invalid input: values in 'body' dictionary must be convertible to integers"
+        "detail": "Failed to calculate total calories, invalid literal for int() with base 10: 'banana'"
     }
 
 
@@ -474,7 +474,7 @@ def test_update_nutrition_400_invalid_body_values(
 
     assert response.status_code == 422
     assert response_data == {
-        "detail": "Failed to calculate total calories, Invalid input: values in 'body' dictionary must be convertible to integers"
+        "detail": "Failed to calculate total calories, invalid literal for int() with base 10: 'banana'"
     }
 
 
@@ -498,7 +498,7 @@ def test_delete_nutrition_200(clean_db, authorised_test_client, authorised_data)
         "user_id": user_id,
         "total_calories": 6,
     }
-    
+
     user = client.get(f"/api/users/{user_id}")
     user_data = user.json()
 

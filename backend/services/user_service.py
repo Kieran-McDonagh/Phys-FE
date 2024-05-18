@@ -1,5 +1,8 @@
 from bson import ObjectId
 from fastapi import HTTPException
+from backend.database.connection import MongoConnection
+
+user_collection = MongoConnection().get_collection("users")
 
 
 class UserService:
@@ -13,9 +16,9 @@ class UserService:
             print(f"An error occurred while removing user from friends lists: {e}")
 
     @staticmethod
-    def apply_document_id_to_user(collection, document_id, user_id, attribute):
+    def apply_document_id_to_user(document_id, user_id, attribute):
         try:
-            updated_user = collection.find_one_and_update(
+            updated_user = user_collection.find_one_and_update(
                 {"_id": ObjectId(user_id)},
                 {"$push": {attribute: str(document_id)}},
                 return_document=True,
@@ -32,9 +35,9 @@ class UserService:
             )
 
     @staticmethod
-    def remove_document_id_from_user(collection, document_id, user_id, attribute):
+    def remove_document_id_from_user(document_id, user_id, attribute):
         try:
-            updated_user = collection.find_one_and_update(
+            updated_user = user_collection.find_one_and_update(
                 {"_id": ObjectId(user_id)},
                 {"$pull": {attribute: str(document_id)}},
                 return_document=True,
