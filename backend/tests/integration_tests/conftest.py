@@ -3,8 +3,9 @@ from backend.database.connection import MongoConnection
 from backend.database.seeding.seed_user_data import user_data
 from backend.database.seeding.seed_workouts_data import workouts_data
 from backend.database.seeding.seed_nutrition_data import nutrition_data
-from backend.database.seeding.authorised_user_data.seed_authorised_user_workouts import (
-    authorised_user_workouts,
+from backend.database.seeding.authorised_user_data.seed_authorised_data import (
+    create_authorised_workout_data,
+    create_authorised_nutrition_data,
 )
 from backend.main import app
 from fastapi.testclient import TestClient
@@ -60,19 +61,22 @@ def authorised_test_client(client):
 
     client.headers.update({"Authorization": f"Bearer {access_token}"})
 
-    workout_data = authorised_user_workouts(authorised_user["id"])
-
-    test_db.seed_collection("workouts", workout_data)
-
     return client, authorised_user
 
 
 @pytest.fixture(scope="function")
-def authorised_workouts(authorised_test_client):
-    test_db = MongoConnection()
-    user_collection = test_db.get_collection("users")
+def authorised_data(authorised_test_client):
     _, user = authorised_test_client
+
+    workout_data = create_authorised_workout_data(user["id"])
+    nutrition_data = create_authorised_nutrition_data(user["id"])
+
+    test_db.seed_collection("nutrition", nutrition_data)
+    test_db.seed_collection("workouts", workout_data)
+
+    user_collection = test_db.get_collection("users")
     user["workouts"].append("83fedb6a8433a888c1aca37d")
+    user["nutrition"].append("81fedb6a8433a888c1aca37e")
 
     user_collection.find_one_and_update(
         {"_id": ObjectId(user["id"])}, {"$set": user}, return_document=True

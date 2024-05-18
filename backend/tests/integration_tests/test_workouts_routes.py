@@ -122,14 +122,14 @@ def test_get_all_workouts_200(clean_db, authorised_test_client):
         assert isinstance(workout["date_created"], str)
 
 
-# def test_get_all_workouts_404(empty_db, authorised_test_client):
-#     client, _ = authorised_test_client
+def test_get_all_workouts_404(empty_db, authorised_test_client):
+    client, _ = authorised_test_client
 
-#     response = client.get("/api/workouts")
-#     response_data = response.json()
+    response = client.get("/api/workouts")
+    response_data = response.json()
 
-#     assert response.status_code == 404
-#     assert response_data == {"detail": "Workouts not found"}
+    assert response.status_code == 404
+    assert response_data == {"detail": "Workouts not found"}
 
 
 def test_get_all_workouts_with_user_id_query_200(clean_db, authorised_test_client):
@@ -184,10 +184,9 @@ def test_get_workouts_sort_by_ascending_200(clean_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 200
-    assert response_data[0]["date_created"] == "2024-04-01T18:00:00"
-    assert response_data[1]["date_created"] == "2024-04-05T18:00:00"
-    assert response_data[2]["date_created"] == "2024-04-05T19:00:00"
-    assert response_data[3]["date_created"] == "2024-04-05T20:00:00"
+    assert response_data[0]["date_created"] == "2024-04-05T18:00:00"
+    assert response_data[1]["date_created"] == "2024-04-05T19:00:00"
+    assert response_data[2]["date_created"] == "2024-04-05T20:00:00"
 
 
 def test_get_workout_by_id_200(clean_db, authorised_test_client):
@@ -230,7 +229,7 @@ def test_get_workout_by_id_400(clean_db, authorised_test_client):
 # UPDATE
 
 
-def test_update_workout_201(clean_db, authorised_test_client, authorised_workouts):
+def test_update_workout_201(clean_db, authorised_test_client, authorised_data):
     client, user = authorised_test_client
     user_id = user["id"]
 
@@ -254,7 +253,7 @@ def test_update_workout_201(clean_db, authorised_test_client, authorised_workout
 
 
 def test_update_workout_additional_properties_201(
-    clean_db, authorised_test_client, authorised_workouts
+    clean_db, authorised_test_client, authorised_data
 ):
     client, user = authorised_test_client
     user_id = user["id"]
@@ -310,23 +309,23 @@ def test_update_workout_401(clean_db, authorised_test_client):
 #     assert response_data == {"detail": "Workout not found"}
 
 
-# def test_update_workout_400(clean_db, authorised_test_client):
-#     client, _ = authorised_test_client
+def test_update_workout_400(clean_db, authorised_test_client):
+    client, _ = authorised_test_client
 
-#     updated_workout = {
-#         "type": "individual",
-#         "title": "title 4",
-#         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
-#     }
-#     response = client.put("api/workouts/banana", json=updated_workout)
-#     response_data = response.json()
+    updated_workout = {
+        "type": "individual",
+        "title": "title 4",
+        "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
+    }
+    response = client.put("api/workouts/banana", json=updated_workout)
+    response_data = response.json()
 
-#     assert response.status_code == 400
-#     assert response_data == {"detail": "Invalid id"}
+    assert response.status_code == 400
+    assert response_data == {"detail": "Invalid id"}
 
 
 def test_update_workout_422_missing_property(
-    clean_db, authorised_test_client, authorised_workouts
+    clean_db, authorised_test_client, authorised_data
 ):
     client, _ = authorised_test_client
 
@@ -363,7 +362,7 @@ def test_update_workout_422_invalid_property(clean_db, authorised_test_client):
 # # # DELETE
 
 
-def test_delete_workout_200(clean_db, authorised_test_client, authorised_workouts):
+def test_delete_workout_200(clean_db, authorised_test_client, authorised_data):
     client, user = authorised_test_client
     user_id = user["id"]
 
@@ -391,7 +390,7 @@ def test_delete_workout_401(clean_db, authorised_test_client):
 
     response = client.delete("api/workouts/83fedb6a8433a888c1aca37d")
     response_data = response.json()
-    print(response_data)
+
     assert response.status_code == 401
     assert response_data == {"detail": "Cannot delete other users workouts"}
 
@@ -406,23 +405,11 @@ def test_delete_workout_401(clean_db, authorised_test_client):
 #     assert response_data == {"detail": "Workout not found"}
 
 
-# def test_delete_workout_400(clean_db):
-#     client, _ = authorised_test_client
+def test_delete_workout_400(clean_db, authorised_test_client):
+    client, _ = authorised_test_client
 
-#     response = client.delete("api/workouts/banana")
-#     response_data = response.json()
+    response = client.delete("api/workouts/banana")
+    response_data = response.json()
 
-#     assert response.status_code == 400
-#     assert response_data == {"detail": "Invalid id"}
-
-
-# def test_delete_workout_500(clean_db):
-#     client, _ = authorised_test_client
-
-#     response = client.delete("api/workouts/65fedb7a8433a888c1aca57b")
-#     response_data = response.json()
-
-#     assert response.status_code == 500
-#     assert response_data == {
-#         "detail": "Failed to remove workout id from user, 500: 404: User not found"
-#     }
+    assert response.status_code == 400
+    assert response_data == {"detail": "Invalid id"}

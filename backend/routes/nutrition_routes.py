@@ -26,10 +26,16 @@ async def post_nutrition(
 
 
 @router.put("/nutrition/{id}", status_code=200)
-async def update_nutrition(id: str, update: NewNutrition):
-    return await NutritionController.update_nutrition(id, update)
+async def update_nutrition(
+    id: str,
+    update: NewNutrition,
+    current_user: User = Depends(Authenticate.get_current_active_user),
+):
+    return await NutritionController.update_nutrition(id, update, current_user)
 
 
 @router.delete("/nutrition/{id}", status_code=200)
-async def delete_nutrition(id: str):
-    return await NutritionController.delete_nutrition(id)
+async def delete_nutrition(
+    id: str, current_user: User = Depends(Authenticate.get_current_active_user)
+):
+    return await NutritionController.delete_nutrition(id, current_user)

@@ -68,6 +68,8 @@ class WorkoutRepository:
 
     @staticmethod
     async def edit_workout(id, update, current_user):
+        if not ObjectId.is_valid(id):
+            raise HTTPException(status_code=400, detail="Invalid id")
         if id not in current_user.workouts:
             raise HTTPException(status_code=401, detail="Cannot edit other users workouts")
 
@@ -83,6 +85,8 @@ class WorkoutRepository:
 
     @staticmethod
     async def remove_workout(id, current_user):
+        if not ObjectId.is_valid(id):
+            raise HTTPException(status_code=400, detail="Invalid id")
         if id not in current_user.workouts:
             raise HTTPException(status_code=401, detail="Cannot delete other users workouts")
 

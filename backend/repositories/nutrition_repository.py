@@ -78,9 +78,13 @@ class NutritionRepository:
         return Nutrition(**{**nutrition_dict, "id": inserted_id})
 
     @staticmethod
-    async def edit_nutrition(id, update):
+    async def edit_nutrition(id, update, current_user):
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
+        if id not in current_user.nutrition:
+            raise HTTPException(
+                status_code=401, detail="Cannot edit other users nutrition data"
+            )
 
         update_dict = dict(update)
         try:
@@ -99,9 +103,13 @@ class NutritionRepository:
             return Nutrition(**updated_nutrition)
 
     @staticmethod
-    async def remove_nutrition(id):
+    async def remove_nutrition(id, current_user):
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="Invalid id")
+        if id not in current_user.nutrition:
+            raise HTTPException(
+                status_code=401, detail="Cannot delete other users nutrition data"
+            )
 
         deleted_nutrition = nutrition_collection.find_one_and_delete(
             {"_id": ObjectId(id)}

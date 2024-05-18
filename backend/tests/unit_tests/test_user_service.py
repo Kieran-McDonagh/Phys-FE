@@ -51,7 +51,7 @@ def test_apply_document_id_to_user():
     )
 
 
-def test_apply_workout_id_to_user_user_not_found():
+def test_apply_document_id_to_user_user_not_found():
     collection_mock = MagicMock()
     collection_mock.find_one_and_update.return_value = None
 
