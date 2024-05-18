@@ -23,7 +23,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class Authenticate:
     @staticmethod
     async def authenticate_user(username: str, password: str):
-        user = await UserRepository.fetch_by_username(username)
+        user = await UserRepository.get_by_username(username)
         if not user:
             return False
         if not await SecurityService.verify_password(password, user.hashed_password):
@@ -56,7 +56,7 @@ class Authenticate:
             token_data = TokenData(username=username)
         except JWTError:
             raise credentials_exception
-        user = await UserRepository.fetch_by_username(username=token_data.username)
+        user = await UserRepository.get_by_username(username=token_data.username)
         if user is None:
             raise credentials_exception
         return user

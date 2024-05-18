@@ -1,115 +1,50 @@
 from backend.database.connection import MongoConnection
-from backend.models.workout_models.workout import Workout as WorkoutModel
-from backend.services.timestamp_service import TimestampService
-from backend.services.user_service import UserService
-from fastapi import HTTPException
 from bson import ObjectId
-import pymongo
 
 mongo_connection = MongoConnection()
 workout_collection = mongo_connection.get_collection("workouts")
-user_collection = mongo_connection.get_collection("users")
 
 
 class WorkoutRepository:
     @staticmethod
-    async def fetch_all_workouts(user_id=None, sort_by_date=True):
-        query = {}
-        if user_id:
-            if not ObjectId.is_valid(user_id):
-                raise HTTPException(status_code=400, detail="Invalid id")
-            query["user_id"] = user_id
-
-        workouts_list = []
-        cursor = workout_collection.find(query)
-
-        cursor = (
-            cursor.sort("date_created", pymongo.DESCENDING)
-            if sort_by_date
-            else cursor.sort("date_created", pymongo.ASCENDING)
-        )
-
-        for document in cursor:
-            workouts_list.append(WorkoutModel(**document))
-        if len(workouts_list) > 0:
-            return workouts_list
-        else:
-            raise HTTPException(status_code=404, detail="Workouts not found")
-
-    @staticmethod
-    async def fetch_by_id(id):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
-
-        workout = workout_collection.find_one({"_id": ObjectId(id)})
-
-        if workout is None:
-            raise HTTPException(status_code=404, detail="workout not found")
-        else:
-            return WorkoutModel(**workout)
-
-    @staticmethod
-    async def add_workout(workout, current_user):
-        workout_dict = dict(workout)
-        workout_dict["user_id"] = current_user.id
-        TimestampService.apply_timestamp_to_document(workout_dict)
-        new_workout = workout_collection.insert_one(workout_dict)
-        inserted_id = new_workout.inserted_id
+    async def get_all(query):
         try:
-            UserService.apply_document_id_to_user(
-                user_collection, inserted_id, current_user.id, "workouts"
+            return workout_collection.find(query)
+        except Exception as e:
+            print(f"Error getting workout data: {e}")
+            return None
+
+    @staticmethod
+    async def get(id):
+        try:
+            return workout_collection.find_one({"_id": ObjectId(id)})
+        except Exception as e:
+            print(f"Error getting workout data: {e}")
+            return None
+
+    @staticmethod
+    async def edit(id, update):
+        try:
+            return workout_collection.find_one_and_update(
+                {"_id": ObjectId(id)}, {"$set": update}, return_document=True
             )
         except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to add workout id to user, {e}",
-            )
-        return WorkoutModel(**{**workout_dict, "id": inserted_id})
+            print(f"Error updating workout data: {e}")
+        return None
 
     @staticmethod
-    async def edit_workout(id, update, current_user):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
-        if id not in current_user.workouts:
-            raise HTTPException(status_code=401, detail="Cannot edit other users workouts")
-
-        update_dict = dict(update)
-        updated_workout = workout_collection.find_one_and_update(
-            {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
-        )
-
-        if updated_workout is None:
-            raise HTTPException(status_code=404, detail="Workout not found")
-        else:
-            return WorkoutModel(**updated_workout)
+    async def delete(id):
+        try:
+            return workout_collection.find_one_and_delete({"_id": ObjectId(id)})
+        except Exception as e:
+            print(f"Error deleting workout data: {e}")
+            return None
 
     @staticmethod
-    async def remove_workout(id, current_user):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
-        if id not in current_user.workouts:
-            raise HTTPException(status_code=401, detail="Cannot delete other users workouts")
-
-        if id in current_user.workouts:
-            deleted_workout = workout_collection.find_one_and_delete(
-                {"_id": ObjectId(id)}
-            )
-        else:
-            raise HTTPException(
-                status_code=401,
-                detail="Not authorised to delete user",
-            )
-
-        if deleted_workout is None:
-            raise HTTPException(status_code=404, detail="Workout not found")
-        else:
-            try:
-                UserService.remove_document_id_from_user(
-                    user_collection, id, deleted_workout["user_id"], "workouts"
-                )
-            except Exception as e:
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Failed to remove workout id from user, {e}",
-                )
-            return WorkoutModel(**deleted_workout)
+    async def set(workout_dict):
+        try:
+            db_workout = workout_collection.insert_one(workout_dict)
+            return db_workout.inserted_id
+        except Exception as e:
+            print(f"An exception occurred when saving workout: {e}")
+            return None

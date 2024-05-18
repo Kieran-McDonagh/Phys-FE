@@ -269,8 +269,8 @@ def test_update_user_400(clean_db, authorised_test_client):
     response = client.put("/api/users/invalidid", json=updated_user)
     response_data = response.json()
 
-    assert response.status_code == 401
-    assert response_data == {"detail": "Cannot edit other users"}
+    assert response.status_code == 400
+    assert response_data == {"detail": "Invalid id"}
 
 
 def test_update_user_422_invalid_property(clean_db, authorised_test_client):
@@ -362,6 +362,15 @@ def test_delete_user_200(clean_db, authorised_test_client):
 
     assert response.status_code == 200
     assert response_data == user
+
+
+def test_delete_user_400(clean_db, authorised_test_client):
+    client, _ = authorised_test_client
+    response = client.delete("/api/users/banana")
+    response_data = response.json()
+
+    assert response.status_code == 400
+    assert response_data == {"detail": "Invalid id"}
 
 
 def test_unauthorised_deletion_401(clean_db, authorised_test_client):

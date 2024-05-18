@@ -1,4 +1,3 @@
-from backend.repositories.nutrition_repository import NutritionRepository
 from backend.services.nutrition_service import NutritionService
 
 

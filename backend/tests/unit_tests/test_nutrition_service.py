@@ -13,10 +13,10 @@ def test_calculate_total_calories():
 def test_calculate_total_calories_exception():
     test_dict = {"body": {"foo": "banana", "bar": 2}}
 
-    with pytest.raises(ValueError) as exc_info:
-        NutritionService.calculate_total_calories(test_dict)
+    with pytest.raises(Exception) as exc_info:
+        NutritionService.calculate_total_calories(test_dict)  
 
     assert (
         str(exc_info.value)
-        == "Invalid input: values in 'body' dictionary must be convertible to integers"
+        == "422: Failed to calculate total calories, invalid literal for int() with base 10: 'banana'"
     )

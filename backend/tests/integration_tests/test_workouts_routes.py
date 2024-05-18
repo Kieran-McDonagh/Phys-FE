@@ -129,7 +129,7 @@ def test_get_all_workouts_404(empty_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 404
-    assert response_data == {"detail": "Workouts not found"}
+    assert response_data == {'detail': 'Workout data not found'}
 
 
 def test_get_all_workouts_with_user_id_query_200(clean_db, authorised_test_client):
@@ -164,7 +164,7 @@ def test_get_all_workouts_with_user_id_query_404(clean_db, authorised_test_clien
     response_data = response.json()
 
     assert response.status_code == 404
-    assert response_data == {"detail": "Workouts not found"}
+    assert response_data == {'detail': 'Workout data not found'}
 
 
 def test_get_all_workouts_with_user_id_query_400(clean_db, authorised_test_client):
@@ -213,7 +213,7 @@ def test_get_workout_by_id_404(empty_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 404
-    assert response_data == {"detail": "workout not found"}
+    assert response_data == {'detail': 'Workout data not found'}
 
 
 def test_get_workout_by_id_400(clean_db, authorised_test_client):
@@ -290,7 +290,7 @@ def test_update_workout_401(clean_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 401
-    assert response_data == {"detail": "Cannot edit other users workouts"}
+    assert response_data == {"detail": "Cannot edit other users workout data"}
 
 
 # def test_update_workout_404(clean_db, authorised_test_client):
@@ -392,7 +392,7 @@ def test_delete_workout_401(clean_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 401
-    assert response_data == {"detail": "Cannot delete other users workouts"}
+    assert response_data == {"detail": "Cannot delete other users workout data"}
 
 
 # def test_delete_workout_404(clean_db):

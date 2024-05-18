@@ -35,7 +35,7 @@ class NutritionService:
         if db_nutrition_id is None:
             return None
         else:
-            UserService.apply_document_id_to_user(
+            await UserService.map_document_to_user(
                 db_nutrition_id, current_user.id, "nutrition"
             )
             return Nutrition(**{**nutrition_dict, "id": db_nutrition_id})
@@ -65,7 +65,7 @@ class NutritionService:
         if deleted_data is None:
             raise HTTPException(status_code=404, detail="Nutrition data not found")
         else:
-            UserService.remove_document_id_from_user(
+            await UserService.remove_document_id_from_user(
                 id, deleted_data["user_id"], "nutrition"
             )
             return Nutrition(**deleted_data)

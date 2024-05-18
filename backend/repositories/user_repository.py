@@ -1,8 +1,5 @@
 from backend.database.connection import MongoConnection
 from backend.models.user_models.user import User as UserModel
-from backend.services.user_service import UserService
-from backend.services.security_service import SecurityService
-from fastapi import HTTPException
 from bson import ObjectId
 
 
@@ -11,90 +8,99 @@ user_collection = MongoConnection().get_collection("users")
 
 class UserRepository:
     @staticmethod
-    async def fetch_all_users(username=None):
-        query = {}
-        if username:
-            query["username"] = username
-
-        users_list = []
-        cursor = user_collection.find(query)
-        for document in cursor:
-            users_list.append(UserModel(**document))
-        if len(users_list) > 0:
-            return users_list
-        else:
-            raise HTTPException(status_code=404, detail="Users not found")
-
-    @staticmethod
-    async def fetch_by_id(id):
-        if not ObjectId.is_valid(id):
-            raise HTTPException(status_code=400, detail="Invalid id")
-
-        user = user_collection.find_one({"_id": ObjectId(id)})
-
-        if user is None:
-            raise HTTPException(status_code=404, detail="User not found")
-        else:
-            return UserModel(**user)
-
-    @staticmethod
-    async def fetch_by_username(username):
-        user = user_collection.find_one({"username": username})
-        if user:
-            return UserModel(**user)
-
-    @staticmethod
-    async def add_user(user):
-        existing_user = user_collection.find_one(
-            {"$or": [{"username": user.username}, {"email": user.email}]}
-        )
-        if existing_user:
-            return {"message": "Username or email already exists"}
-
-        hashed_password = SecurityService.get_password_hash(user.password)
-        user_dict = user.dict(exclude={"password"})
-        user_dict["hashed_password"] = hashed_password
-        user_dict["workouts"] = []
-        user_dict["nutrition"] = []
-        user_dict["friends"] = []
-        user_dict["disabled"] = False
-        new_user = user_collection.insert_one(user_dict)
-        inserted_id = new_user.inserted_id
-        return UserModel(
-            **{**user_dict, "id": inserted_id, "workouts": [], "friends": []}
-        )
-
-    @staticmethod
-    async def edit_user(id, update, current_user):
-        if id != current_user.id:
-            raise HTTPException(status_code=401, detail="Cannot edit other users")
-
-        update_dict = dict(update)
-        updated_user = user_collection.find_one_and_update(
-            {"_id": ObjectId(id)}, {"$set": update_dict}, return_document=True
-        )
-
-        if updated_user is None:
-            raise HTTPException(status_code=404, detail="User not found")
-        else:
-            return UserModel(**updated_user)
-
-    @staticmethod
-    async def remove_user(id, current_user):
-        if id != current_user.id:
-            raise HTTPException(status_code=401, detail="Cannot delete other users")
-
+    async def get_all(query):
         try:
-            await UserService.remove_user_from_all_friends_lists(user_collection, id)
+            return user_collection.find(query)
         except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to remove deleted user from friends lists, {e}",
+            print(f"Error getting user data: {e}")
+            return None
+
+    @staticmethod
+    async def get(id):
+        try:
+            return user_collection.find_one({"_id": ObjectId(id)})
+        except Exception as e:
+            print(f"Error getting user data: {e}")
+            return None
+
+    @staticmethod
+    async def get_by_username(username):
+        try:
+            user = user_collection.find_one({"username": username})
+            if user:
+                return UserModel(**user)
+        except Exception as e:
+            print(f"Error getting user data: {e}")
+            return None
+
+    @staticmethod
+    async def set(user):
+        try:
+            user = user_collection.insert_one(user)
+            return user.inserted_id
+        except Exception as e:
+            print(f"Error creating user: {e}")
+            return None
+
+    @staticmethod
+    async def edit(id, update):
+        try:
+            return user_collection.find_one_and_update(
+                {"_id": ObjectId(id)}, {"$set": update}, return_document=True
             )
+        except Exception as e:
+            print(f"Error updating user: {e}")
+            return None
 
-        deleted_user = user_collection.find_one_and_delete({"_id": ObjectId(id)})
+    @staticmethod
+    async def delete(id):
+        try:
+            return user_collection.find_one_and_delete({"_id": ObjectId(id)})
+        except Exception as e:
+            print(f"Error deleting user: {e}")
+            return None
 
-        if deleted_user is None:
-            raise HTTPException(status_code=404, detail="User not found")
-        else:
-            return UserModel(**deleted_user)
+    @staticmethod
+    async def check_existing_user(user):
+        try:
+            existing_user = user_collection.find_one(
+                {"$or": [{"username": user.username}, {"email": user.email}]}
+            )
+            if existing_user:
+                return {"message": "Username or email already exists"}
+        except Exception as e:
+            print(f"Error checking user data: {e}")
+            return None
+
+    @staticmethod
+    async def remove_user_from_all_friends_lists(user_id):
+        try:
+            user_collection.update_many(
+                {"friends": user_id}, {"$pull": {"friends": user_id}}
+            )
+        except Exception as e:
+            print(f"An error occurred while removing user from friends lists: {e}")
+
+    @staticmethod
+    async def apply_document_id_to_user(document_id, user_id, attribute):
+        try:
+            return user_collection.find_one_and_update(
+                {"_id": ObjectId(user_id)},
+                {"$push": {attribute: str(document_id)}},
+                return_document=True,
+            )
+        except Exception as e:
+            print(f"An error occurred while applying document id to user: {e}")
+            return None
+
+    @staticmethod
+    async def delete_document_id_from_user(document_id, user_id, attribute):
+        try:
+            return user_collection.find_one_and_update(
+                {"_id": ObjectId(user_id)},
+                {"$pull": {attribute: str(document_id)}},
+                return_document=True,
+            )
+        except Exception as e:
+            print(f"An error occurred while removing document id from user: {e}")
+            return None
