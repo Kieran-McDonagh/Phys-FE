@@ -56,7 +56,9 @@ class UserService:
 
     @staticmethod
     async def create_new_user(user):
-        await UserRepository.check_existing_user(user)
+        existing_user = await UserRepository.check_existing_user(user)
+        if existing_user:
+            raise HTTPException(status_code=409, detail=existing_user)
 
         hashed_password = SecurityService.get_password_hash(user.password)
         user_dict = user.dict(exclude={"password"})
