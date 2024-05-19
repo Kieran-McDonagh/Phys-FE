@@ -1,7 +1,7 @@
-from backend.services.timestamp_service import TimestampService
-from backend.services.user_service import UserService
-from backend.repositories.nutrition_repository import NutritionRepository
-from backend.models.nutrition_models.nutrition import Nutrition
+from services.timestamp_service import TimestampService
+from services.user_service import UserService
+from repositories.nutrition_repository import NutritionRepository
+from models.nutrition_models.nutrition import Nutrition
 import pymongo
 from fastapi import HTTPException
 from bson import ObjectId

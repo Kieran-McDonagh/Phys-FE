@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Query, Depends
-from backend.controllers.user_controller import UserController
-from backend.models.user_models.editable_user import EditableUser
-from backend.models.user_models.new_user import NewUser
-from backend.security.authentication import Authenticate
-from backend.models.user_models.user import User
+from controllers.user_controller import UserController
+from models.user_models.editable_user import EditableUser
+from models.user_models.new_user import NewUser
+from security.authentication import Authenticate
+from models.user_models.user import User
 
 
 router = APIRouter()

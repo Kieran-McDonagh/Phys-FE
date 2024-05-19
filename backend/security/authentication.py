@@ -4,15 +4,12 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from backend.models.user_models.new_user import NewUser as User
-from backend.models.token_models.token_data import TokenData
-from backend.services.security_service import SecurityService
-from backend.repositories.user_repository import UserRepository
+from models.user_models.new_user import NewUser as User
+from models.token_models.token_data import TokenData
+from services.security_service import SecurityService
+from repositories.user_repository import UserRepository
 
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")

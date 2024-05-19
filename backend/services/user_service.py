@@ -1,8 +1,8 @@
 from bson import ObjectId
 from fastapi import HTTPException
-from backend.repositories.user_repository import UserRepository
-from backend.models.user_models.user import User as UserModel
-from backend.services.security_service import SecurityService
+from repositories.user_repository import UserRepository
+from models.user_models.user import User as UserModel
+from services.security_service import SecurityService
 
 
 class UserService:

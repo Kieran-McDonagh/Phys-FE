@@ -1,5 +1,5 @@
-from backend.repositories.workout_repository import WorkoutRepository
-from backend.services.workout_service import WorkoutService
+from repositories.workout_repository import WorkoutRepository
+from services.workout_service import WorkoutService
 
 
 class WorkoutController:

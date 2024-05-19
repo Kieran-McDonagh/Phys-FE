@@ -1,4 +1,4 @@
-from backend.services.nutrition_service import NutritionService
+from services.nutrition_service import NutritionService
 import pytest
 
 
@@ -14,7 +14,7 @@ def test_calculate_total_calories_exception():
     test_dict = {"body": {"foo": "banana", "bar": 2}}
 
     with pytest.raises(Exception) as exc_info:
-        NutritionService.calculate_total_calories(test_dict)  
+        NutritionService.calculate_total_calories(test_dict)
 
     assert (
         str(exc_info.value)

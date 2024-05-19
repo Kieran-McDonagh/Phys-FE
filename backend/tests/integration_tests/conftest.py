@@ -1,13 +1,13 @@
 import pytest
-from backend.database.connection import MongoConnection
-from backend.database.seeding.seed_user_data import user_data
-from backend.database.seeding.seed_workouts_data import workouts_data
-from backend.database.seeding.seed_nutrition_data import nutrition_data
-from backend.database.seeding.authorised_user_data.seed_authorised_data import (
+from database.connection import MongoConnection
+from database.seeding.seed_user_data import user_data
+from database.seeding.seed_workouts_data import workouts_data
+from database.seeding.seed_nutrition_data import nutrition_data
+from database.seeding.authorised_user_data.seed_authorised_data import (
     create_authorised_workout_data,
     create_authorised_nutrition_data,
 )
-from backend.main import app
+from main import app
 from fastapi.testclient import TestClient
 from bson import ObjectId
 

@@ -1,7 +1,7 @@
-from backend.services.timestamp_service import TimestampService
-from backend.services.user_service import UserService
-from backend.repositories.workout_repository import WorkoutRepository
-from backend.models.workout_models.workout import Workout
+from services.timestamp_service import TimestampService
+from services.user_service import UserService
+from repositories.workout_repository import WorkoutRepository
+from models.workout_models.workout import Workout
 import pymongo
 from fastapi import HTTPException
 from bson import ObjectId
