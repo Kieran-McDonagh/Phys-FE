@@ -4,21 +4,15 @@
 
 To get the project running on your machine, follow these steps:
 
-1. In the root of the project, create a venv with `python3 -m venv venv`
+1. Create a `.env.development` and `.env.production` file to store your mongo uri's.
 
-2. Set the PYTHONPATH to point to the project root in the activation script. For example:
-   ```bash
-   export PYTHONPATH="/path/to/project/BattlePhys/"
-   ```
-3. Install required dependencies: cd into backend, then `pip install -r requirements.txt`
+2. from the backend root, run `bash run_development.sh` or `bash run_production.sh`
 
-4. Create a `.env` file to store your mongo uri's.
+## Running Tests
 
-## Running Integration Tests
-
-To run integration tests, execute the following command from the root of the backend directory:
+To run tests, execute the following command from the backend root:
 
 ```bash
-python scripts/run_tests/run_integration_tests.py
+bash run_tests.sh
 
 ```

@@ -1,13 +1,13 @@
 from unittest.mock import patch
 from datetime import datetime
-from backend.services.timestamp_service import TimestampService
+from services.timestamp_service import TimestampService
 
 
 def test_apply_timestamp_to_new_document():
     test_dict = {"foo": "bar"}
     fixed_datetime = datetime(2024, 4, 29, 12, 0, 0)
 
-    with patch("backend.services.timestamp_service.datetime") as mocked_datetime:
+    with patch("services.timestamp_service.datetime") as mocked_datetime:
         mocked_datetime.now.return_value = fixed_datetime
 
         TimestampService.apply_timestamp_to_document(test_dict)
@@ -18,7 +18,7 @@ def test_apply_timestamp_to_new_document():
 def test_apply_timestamp_to_document_exception(capsys):
     test_dict = {"foo": "bar"}
 
-    with patch("backend.services.timestamp_service.datetime") as mocked_datetime:
+    with patch("services.timestamp_service.datetime") as mocked_datetime:
         mocked_datetime.now.side_effect = Exception("Datetime error")
 
         TimestampService.apply_timestamp_to_document(test_dict)

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from backend.models.token_models.token import Token
-from backend.security.authentication import Authenticate
+from models.token_models.token import Token
+from security.authentication import Authenticate
 from typing import Annotated
 from datetime import timedelta
 

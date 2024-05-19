@@ -1,5 +1,5 @@
-from backend.repositories.user_repository import UserRepository
-from backend.services.user_service import UserService
+from repositories.user_repository import UserRepository
+from services.user_service import UserService
 
 
 class UserController:

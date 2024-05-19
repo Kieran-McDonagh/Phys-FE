@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    env_file:
+      - .env.development
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    command: pytest -v -s --maxfail=1 --disable-warnings

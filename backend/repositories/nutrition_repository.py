@@ -1,4 +1,4 @@
-from backend.database.connection import MongoConnection
+from database.connection import MongoConnection
 from bson import ObjectId
 
 mongo_connection = MongoConnection()

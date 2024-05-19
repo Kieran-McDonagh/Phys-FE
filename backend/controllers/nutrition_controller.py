@@ -1,10 +1,12 @@
-from backend.services.nutrition_service import NutritionService
+from services.nutrition_service import NutritionService
 
 
 class NutritionController:
     @staticmethod
     async def get_all(user_id=None, sort_by_date=True):
-        response = await NutritionService.get_all_nutritional_data(user_id, sort_by_date)
+        response = await NutritionService.get_all_nutritional_data(
+            user_id, sort_by_date
+        )
         return response
 
     @staticmethod

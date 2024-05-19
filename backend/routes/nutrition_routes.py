@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Query, Depends
-from backend.controllers.nutrition_controller import NutritionController
-from backend.models.nutrition_models.new_nutrition import NewNutrition
-from backend.models.user_models.user import User
-from backend.security.authentication import Authenticate
+from controllers.nutrition_controller import NutritionController
+from models.nutrition_models.new_nutrition import NewNutrition
+from models.user_models.user import User
+from security.authentication import Authenticate
 
 router = APIRouter()
 

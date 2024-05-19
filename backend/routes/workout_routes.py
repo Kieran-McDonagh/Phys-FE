@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Query, Depends
-from backend.controllers.workout_controller import WorkoutController
-from backend.models.workout_models.new_workout import NewWorkout
-from backend.models.user_models.user import User
-from backend.security.authentication import Authenticate
+from controllers.workout_controller import WorkoutController
+from models.workout_models.new_workout import NewWorkout
+from models.user_models.user import User
+from security.authentication import Authenticate
 
 
 router = APIRouter()

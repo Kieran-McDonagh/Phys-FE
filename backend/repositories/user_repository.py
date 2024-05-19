@@ -1,5 +1,5 @@
-from backend.database.connection import MongoConnection
-from backend.models.user_models.user import User as UserModel
+from database.connection import MongoConnection
+from models.user_models.user import User as UserModel
 from bson import ObjectId
 
 

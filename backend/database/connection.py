@@ -1,34 +1,19 @@
 from pymongo.mongo_client import MongoClient
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 class MongoConnection:
-    connected = False
-
     def __init__(self):
-        self.environment = os.environ.get("ENV")
         self.mongo_uri = os.environ.get("MONGO_URI")
-        self.test_mongo_uri = os.environ.get("TEST_MONGO_URI")
+        if not self.mongo_uri:
+            raise ValueError("MONGO_URI environment variable not set")
         self.client = self.connect_to_database()
 
     def connect_to_database(self):
         try:
-            # just for logging purposes
-            if not MongoConnection.connected:
-                if self.environment == "testing":
-                    print("connecting to test database")
-                else:
-                    print("connecting to production database")
-                MongoConnection.connected = True
-            # actually connecting to test or prod here
-            if self.environment == "testing":
-                return MongoClient(self.test_mongo_uri)
-            else:
-                return MongoClient(self.mongo_uri)
-        except ValueError as e:
+            client = MongoClient(self.mongo_uri)
+            client.server_info()
+            return client
+        except ConnectionError as e:
             print(f"Error connecting to database: {e}")
             raise
 
@@ -39,9 +24,7 @@ class MongoConnection:
         return self.get_database()[collection]
 
     def drop_collection(self, collection):
-        collection = self.get_database()[collection]
-        collection.drop()
+        self.get_database().drop_collection(collection)
 
     def seed_collection(self, collection, data):
-        collection = self.get_database()[collection]
-        collection.insert_many(data)
+        self.get_database()[collection].insert_many(data)

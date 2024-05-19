@@ -1,9 +1,0 @@
-repos:
-  - repo: local
-    hooks:
-      - id: run-tests
-        name: Running all tests
-        entry: python3 backend/scripts/run_tests/run_pre_commit_tests.py
-        language: system
-        pass_filenames: false
-        stages: [commit]
