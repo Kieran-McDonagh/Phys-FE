@@ -1,8 +1,5 @@
-from database.connection import MongoConnection
 from bson import ObjectId
-
-mongo_connection = MongoConnection()
-nutrition_collection = mongo_connection.get_collection("nutrition")
+from database.connection import nutrition_collection
 
 
 class NutritionRepository:

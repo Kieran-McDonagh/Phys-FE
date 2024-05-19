@@ -1,9 +1,10 @@
-from database.connection import MongoConnection
 from models.user_models.user import User as UserModel
+from database.connection import user_collection
 from bson import ObjectId
 
 
-user_collection = MongoConnection().get_collection("users")
+
+
 
 
 class UserRepository:

@@ -1,8 +1,6 @@
-from database.connection import MongoConnection
+from database.connection import workout_collection
 from bson import ObjectId
 
-mongo_connection = MongoConnection()
-workout_collection = mongo_connection.get_collection("workouts")
 
 
 class WorkoutRepository:
