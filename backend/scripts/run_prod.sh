@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd docker/
 # Define the Docker Compose file
 DOCKER_COMPOSE_FILE=docker-compose-production.yaml
 

@@ -1,4 +1,3 @@
-from repositories.workout_repository import WorkoutRepository
 from services.workout_service import WorkoutService
 
 

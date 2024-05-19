@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd docker/
 # Define the Docker Compose test file
 DOCKER_COMPOSE_FILE=docker-compose-tests.yaml
 

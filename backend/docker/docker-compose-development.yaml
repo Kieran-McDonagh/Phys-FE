@@ -2,12 +2,13 @@ version: '3'
 
 services:
   web:
-    build: .
+    build:
+      context: ..
+      dockerfile: Dockerfile
     command: sh -c "uvicorn main:app --reload --port=8000 --host=0.0.0.0"
     env_file:
-      - .env.production
+      - ../.env.development
     ports:
       - 8000:8000
     volumes:
-      - .:/app
-    
+      - ../:/app
