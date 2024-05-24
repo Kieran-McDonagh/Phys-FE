@@ -1,15 +1,18 @@
-import { Text, View } from "react-native";
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 
-export default function Index() {
+export default function Index () {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Hello World!</Text>
+    <View style={styles.container}>
+      <Text>Hello World</Text>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container : {
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center'
+  }
+})
