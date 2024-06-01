@@ -1,8 +1,20 @@
 # BattlePhys (**In Development**)
 
-## Backend
+This project has been built using:
 
-To get the project running on your machine, follow these steps:
+Backend technologies:
+
+- [FastAPI](https://fastapi.tiangolo.com/tutorial/)
+- [Docker](https://docs.docker.com/get-started/overview/)
+- [pytest](https://docs.pytest.org/en/8.2.x/getting-started.html)
+
+Frontend technologies:
+
+- [Bun](https://bun.sh/docs)
+- [React Native](https://reactnative.dev/docs/environment-setup)
+- [Expo](https://docs.expo.dev/get-started/set-up-your-environment/)
+
+## Getting Started
 
 1. Create a `.env.development` file to store your mongo uri, secret key, algorithm and access token expiration, e.g.:
 
@@ -16,18 +28,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = <chosen time in minutes>
 openssl rand -hex 32
 ```
 
-2. To get the dev server running, from the backend root, run `bash run_development.sh`
+1. To get just the development server running, from the backend root, run: `scripts/run_development.sh`
 
-## Running Tests
+## Running Backend Tests
 
-To run tests, execute the following command from the backend root:
+To run tests, execute the following command from the backend root: `scripts/run_tests.sh`
 
-`scripts/run_tests.sh`
+## Running the App
 
-## Frontend
+To run the Battlephys App with a development server:
 
-1. First run `npm i` to install dependencies.
+1. First run `bun install` to install dependencies.
 
-2. To run the dev server from the frontend, from the frontend root run `npm run server-start`
+2. To run the developer server from the frontend, from the frontend root run: `bun run server-start`
 
-3. Then to run the expo app run `npm start`
+3. Then to run the expo app run `bun start`
