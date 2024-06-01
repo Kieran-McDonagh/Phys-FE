@@ -1,10 +1,8 @@
 #!/bin/bash
 
-cd ..
+chmod +x "$0"
 
-cd backend
-
-chmod +x scripts/run_development.sh
+cd ../backend
 
 echo "Starting Development Server"
 

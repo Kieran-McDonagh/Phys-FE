@@ -19,7 +19,7 @@ Frontend technologies:
 1. Create a `.env.development` file to store your mongo uri, secret key, algorithm and access token expiration, e.g.:
 
 ```
-MONGO_URI='mongodb+srv://<username>:<password>@<cluster>.jsphw8s.mongodb.net/<database>?'
+MONGO_URI = "mongodb://mongo:27017/test_database"
 SECRET_KEY = "<secret_key>"
 ALGORITHM = "<chosen algorithm>"
 ACCESS_TOKEN_EXPIRE_MINUTES = <chosen time in minutes>
@@ -28,11 +28,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = <chosen time in minutes>
 openssl rand -hex 32
 ```
 
-1. To get just the development server running, from the backend root, run: `scripts/run_development.sh`
+1. To get just the development server running, from the backend root, run: `bash scripts/run_development.sh`
 
 ## Running Backend Tests
 
-To run tests, execute the following command from the backend root: `scripts/run_tests.sh`
+To run tests, execute the following command from the backend root: `bash scripts/run_tests.sh`
 
 ## Running the App
 

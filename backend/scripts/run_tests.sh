@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Make the script executable
+chmod +x "$0"
+
 cd docker/
 # Define the Docker Compose test file
 DOCKER_COMPOSE_FILE=docker-compose-tests.yaml
