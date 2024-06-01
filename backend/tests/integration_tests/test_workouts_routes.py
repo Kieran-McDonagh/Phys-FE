@@ -5,17 +5,18 @@ from bson import ObjectId
 
 def test_post_workout_201(clean_db, authorised_test_client):
     client, user = authorised_test_client
-    user_id = user['id']
+    user_id = user["id"]
     workout_to_post = {
         "type": "individual",
         "title": "test post workout",
         "body": {"exercise 1": "10", "exercise 2": "20", "exercise 3": "30"},
+        "notes": "test note",
     }
     response = client.post("/api/workouts", json=workout_to_post)
     response_data = response.json()
 
     assert response.status_code == 201
-    assert len(response_data) == 6
+    assert len(response_data) == 7
     assert "id" in response_data
     assert isinstance(response_data["id"], str)
     assert ObjectId.is_valid(response_data["id"])
@@ -29,6 +30,7 @@ def test_post_workout_201(clean_db, authorised_test_client):
         "exercise 3": "30",
     }
     assert response_data["user_id"] == user_id
+    assert response_data["notes"] == "test note"
 
     user_to_check = client.get(f"/api/users/{user_id}")
     user_data = user_to_check.json()
@@ -42,6 +44,7 @@ def test_post_workout_422_missing_property(clean_db, authorised_test_client):
     workout_to_post = {
         "type": "individual",
         "body": {"exercise 1": "10", "exercise 2": "20", "exercise 3": "30"},
+        "notes": "test note",
     }
     response = client.post("/api/workouts", json=workout_to_post)
     response_data = response.json()
@@ -59,6 +62,7 @@ def test_post_workout_422_invalid_property(clean_db, authorised_test_client):
         "type": "banana",
         "title": "test incorrect type",
         "body": {"exercise 1": "10", "exercise 2": "20", "exercise 3": "30"},
+        "notes": "test note",
     }
     response = client.post("/api/workouts", json=workout_to_post)
     response_data = response.json()
@@ -79,6 +83,7 @@ def test_post_workout_422_invalid_data_type(clean_db, authorised_test_client):
         "type": "battlephys",
         "title": 12345,
         "body": {"exercise 1": "10", "exercise 2": "20", "exercise 3": "30"},
+        "notes": "test note",
     }
     response = client.post("/api/workouts", json=workout_to_post)
     response_data = response.json()
@@ -105,7 +110,7 @@ def test_get_all_workouts_200(clean_db, authorised_test_client):
     assert response_data[2]["date_created"] == "2024-04-05T18:00:00"
 
     for workout in response_data:
-        assert len(workout) == 6
+        assert len(workout) == 7
         assert "id" in workout
         assert isinstance(workout["id"], str)
         assert ObjectId.is_valid(workout["id"])
@@ -120,6 +125,8 @@ def test_get_all_workouts_200(clean_db, authorised_test_client):
         assert ObjectId.is_valid(workout["user_id"])
         assert "date_created" in workout
         assert isinstance(workout["date_created"], str)
+        assert isinstance(workout["notes"], str)
+        assert "notes" in workout
 
 
 def test_get_all_workouts_404(empty_db, authorised_test_client):
@@ -129,7 +136,7 @@ def test_get_all_workouts_404(empty_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 404
-    assert response_data == {'detail': 'Workout data not found'}
+    assert response_data == {"detail": "Workout data not found"}
 
 
 def test_get_all_workouts_with_user_id_query_200(clean_db, authorised_test_client):
@@ -140,7 +147,7 @@ def test_get_all_workouts_with_user_id_query_200(clean_db, authorised_test_clien
 
     assert response.status_code == 200
     for workout in response_data:
-        assert len(workout) == 6
+        assert len(workout) == 7
         assert "id" in workout
         assert isinstance(workout["id"], str)
         assert ObjectId.is_valid(workout["id"])
@@ -155,6 +162,8 @@ def test_get_all_workouts_with_user_id_query_200(clean_db, authorised_test_clien
         assert ObjectId.is_valid(workout["user_id"])
         assert "date_created" in workout
         assert isinstance(workout["date_created"], str)
+        assert isinstance(workout["notes"], str)
+        assert "notes" in workout
 
 
 def test_get_all_workouts_with_user_id_query_404(clean_db, authorised_test_client):
@@ -164,7 +173,7 @@ def test_get_all_workouts_with_user_id_query_404(clean_db, authorised_test_clien
     response_data = response.json()
 
     assert response.status_code == 404
-    assert response_data == {'detail': 'Workout data not found'}
+    assert response_data == {"detail": "Workout data not found"}
 
 
 def test_get_all_workouts_with_user_id_query_400(clean_db, authorised_test_client):
@@ -203,6 +212,7 @@ def test_get_workout_by_id_200(clean_db, authorised_test_client):
         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
         "user_id": "75fedb7a8433a888c1aca57d",
         "date_created": "2024-04-05T18:00:00",
+        "notes": "note 1",
     }
 
 
@@ -213,7 +223,7 @@ def test_get_workout_by_id_404(empty_db, authorised_test_client):
     response_data = response.json()
 
     assert response.status_code == 404
-    assert response_data == {'detail': 'Workout data not found'}
+    assert response_data == {"detail": "Workout data not found"}
 
 
 def test_get_workout_by_id_400(clean_db, authorised_test_client):
@@ -237,6 +247,7 @@ def test_update_workout_201(clean_db, authorised_test_client, authorised_data):
         "type": "battlephys",
         "title": "title 4",
         "body": {"exercise 1": "10", "exercise 2": "10", "new exercise": "10"},
+        "notes": "note 1",
     }
     response = client.put("api/workouts/83fedb6a8433a888c1aca37d", json=updated_workout)
     response_data = response.json()
@@ -247,6 +258,7 @@ def test_update_workout_201(clean_db, authorised_test_client, authorised_data):
         "type": "battlephys",
         "title": "title 4",
         "body": {"exercise 1": "10", "exercise 2": "10", "new exercise": "10"},
+        "notes": "note 1",
         "user_id": user_id,
         "date_created": "2024-04-01T18:00:00",
     }
@@ -262,6 +274,7 @@ def test_update_workout_additional_properties_201(
         "type": "individual",
         "title": "title 4",
         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
+        "notes": "note 1",
         "foo": "bar",
     }
     response = client.put("api/workouts/83fedb6a8433a888c1aca37d", json=updated_workout)
@@ -273,6 +286,7 @@ def test_update_workout_additional_properties_201(
         "type": "individual",
         "title": "title 4",
         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
+        "notes": "note 1",
         "user_id": user_id,
         "date_created": "2024-04-01T18:00:00",
     }
@@ -285,6 +299,7 @@ def test_update_workout_401(clean_db, authorised_test_client):
         "type": "battlephys",
         "title": "title 4",
         "body": {"exercise 1": "10", "exercise 2": "10", "new exercise": "10"},
+        "notes": "note 1",
     }
     response = client.put("api/workouts/83fedb6a8433a888c1aca37d", json=updated_workout)
     response_data = response.json()
@@ -316,6 +331,7 @@ def test_update_workout_400(clean_db, authorised_test_client):
         "type": "individual",
         "title": "title 4",
         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
+        "notes": "note 1",
     }
     response = client.put("api/workouts/banana", json=updated_workout)
     response_data = response.json()
@@ -332,6 +348,7 @@ def test_update_workout_422_missing_property(
     updated_workout = {
         "type": "individual",
         "title": "title 4",
+        "notes": "note 1",
     }
     response = client.put("api/workouts/83fedb6a8433a888c1aca37d", json=updated_workout)
     response_data = response.json()
@@ -349,6 +366,7 @@ def test_update_workout_422_invalid_property(clean_db, authorised_test_client):
         "type": "individual",
         "title": "title 4",
         "body": "foo",
+        "notes": "note 1",
     }
     response = client.put("api/workouts/83fedb6a8433a888c1aca37d", json=updated_workout)
     response_data = response.json()
@@ -375,6 +393,7 @@ def test_delete_workout_200(clean_db, authorised_test_client, authorised_data):
         "type": "individual",
         "title": "title 1",
         "body": {"exercise 1": "10", "exercise 2": "10", "exercise 3": "10"},
+        "notes": "note 4",
         "user_id": user_id,
         "date_created": "2024-04-01T18:00:00",
     }

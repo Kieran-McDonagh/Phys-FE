@@ -1,11 +1,11 @@
 from pydantic import BaseModel, field_validator
-from bson import ObjectId
 
 
 class NewWorkout(BaseModel):
     type: str
     title: str
     body: dict
+    notes: str
 
     @field_validator("type")
     def validate_type(cls, v):

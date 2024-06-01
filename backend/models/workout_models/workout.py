@@ -7,6 +7,7 @@ class Workout(BaseModel):
     type: str
     title: str
     body: dict
+    notes: str
     user_id: str
     date_created: datetime
 

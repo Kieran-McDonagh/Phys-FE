@@ -68,7 +68,7 @@ class WorkoutService:
         updated_workout = await WorkoutRepository.edit(id, update_dict)
 
         if updated_workout is None:
-            raise HTTPException(status_code=404, detail="Nutrition data not found")
+            raise HTTPException(status_code=404, detail="Workout data not found")
         else:
             return Workout(**updated_workout)
 
