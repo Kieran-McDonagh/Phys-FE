@@ -2,24 +2,29 @@ import React, { useState } from "react";
 import { StyleSheet, Button, TextInput } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/auth";
-import { Link } from "expo-router"; 
+import { Link } from "expo-router";
 
 export default function LoginScreen() {
   const auth = useAuth();
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = () => {
-    auth?.signIn(username, password);
+  const handleRegister = () => {
+    auth?.registerUser(email, username, fullName, password);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
+      <Text style={styles.title}>Register</Text>
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="black"
+        onChangeText={setEmail}
+        value={email}
       />
       <TextInput
         style={styles.input}
@@ -27,6 +32,14 @@ export default function LoginScreen() {
         placeholderTextColor="black"
         onChangeText={setUsername}
         value={username}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Full name"
+        placeholderTextColor="black"
+        onChangeText={setFullName}
+        value={fullName}
       />
       <TextInput
         style={styles.input}
@@ -36,9 +49,9 @@ export default function LoginScreen() {
         value={password}
         secureTextEntry={true}
       />
-      <Button title="Sign-in" color={"orange"} onPress={handleSignIn} />
-      <Link href="/register">
-        <Text style={styles.registerText}>Register</Text>
+      <Button title="Register" color={"pink"} onPress={handleRegister} />
+      <Link href="/login">
+        <Text style={styles.registerText}>Login</Text>
       </Link>
     </View>
   );
