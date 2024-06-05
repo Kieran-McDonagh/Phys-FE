@@ -11,12 +11,12 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Workouts home page</Text>
+      <Text style={styles.title}>Nutrition home page</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
       <ScrollView>
         <View>
-          <Text>Workouts data</Text>
+          <Text>Nutrition data</Text>
         </View>
       </ScrollView>
     </View>

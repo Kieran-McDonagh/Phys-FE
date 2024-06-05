@@ -1,32 +1,40 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, TextInput } from "react-native";
+import { StyleSheet, Button, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/auth";
-import { Link } from "expo-router"; 
+import { router } from "expo-router";
+import MissingLoginData from "@/components/login-components/MissingLoginData";
 
 export default function LoginScreen() {
   const auth = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [missingField, setMissingField] = useState<string | null>(null);
 
   const handleSignIn = () => {
+    if (!username || !password) {
+      setMissingField("Missing Field");
+      return;
+    }
     auth?.signIn(username, password);
+  };
+
+  const handleRegisterPress = () => {
+    setMissingField(null);
+    router.push("/register");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <TextInput
         style={styles.input}
         placeholder="Username"
         placeholderTextColor="black"
         onChangeText={setUsername}
         value={username}
+        autoCapitalize='none'
       />
       <TextInput
         style={styles.input}
@@ -35,11 +43,15 @@ export default function LoginScreen() {
         onChangeText={setPassword}
         value={password}
         secureTextEntry={true}
+        autoCapitalize='none'
       />
-      <Button title="Sign-in" color={"orange"} onPress={handleSignIn} />
-      <Link href="/register">
+      <TouchableOpacity onPress={handleSignIn}>
+        <Text style={styles.signInText}>Log-in</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleRegisterPress}>
         <Text style={styles.registerText}>Register</Text>
-      </Link>
+      </TouchableOpacity>
+      {missingField && <MissingLoginData message={missingField} />}
     </View>
   );
 }
@@ -51,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
   },
   separator: {
@@ -68,8 +80,14 @@ const styles = StyleSheet.create({
     width: "80%",
     textAlign: "center",
   },
+  signInText: {
+    color: "orange",
+    fontSize: 20,
+    marginTop: 20,
+  },
   registerText: {
     color: "blue",
+    fontSize: 20,
     marginTop: 20,
   },
 });
