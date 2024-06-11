@@ -3,9 +3,9 @@
 # Make the script executable
 chmod +x "$0"
 
-cd docker/
+# cd docker/
 # Define the Docker Compose file
-DOCKER_COMPOSE_FILE=docker-compose-production.yaml
+DOCKER_COMPOSE_FILE=compose.yaml
 
 # Build and run the services using Docker Compose
 docker-compose -f $DOCKER_COMPOSE_FILE up --build

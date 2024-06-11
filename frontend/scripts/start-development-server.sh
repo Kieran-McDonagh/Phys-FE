@@ -6,6 +6,6 @@ cd ../backend
 
 echo "Starting Development Server"
 
-scripts/run_development.sh
+scripts/run_app.sh
 
 
