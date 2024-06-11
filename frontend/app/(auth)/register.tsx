@@ -1,18 +1,29 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, TextInput } from "react-native";
+import { StyleSheet, Button, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/auth";
-import { Link } from "expo-router";
+import { router } from "expo-router";
+import MissingLoginData from "@/components/login-components/MissingLoginData";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const auth = useAuth();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
+  const [missingField, setMissingField] = useState<string | null>(null);
 
   const handleRegister = () => {
+    if (!email || !username || !fullName || !password) {
+      setMissingField("Missing Field");
+      return;
+    }
     auth?.registerUser(email, username, fullName, password);
+  };
+
+  const handleBackToLogin = () => {
+    setMissingField(null);
+    router.push("/login");
   };
 
   return (
@@ -21,25 +32,27 @@ export default function LoginScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="black"
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
         placeholder="Username"
         placeholderTextColor="black"
         onChangeText={setUsername}
         value={username}
+        autoCapitalize="none"
       />
-
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="black"
+        onChangeText={setEmail}
+        value={email}
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="Full name"
         placeholderTextColor="black"
         onChangeText={setFullName}
         value={fullName}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -48,11 +61,15 @@ export default function LoginScreen() {
         onChangeText={setPassword}
         value={password}
         secureTextEntry={true}
+        autoCapitalize="none"
       />
-      <Button title="Register" color={"pink"} onPress={handleRegister} />
-      <Link href="/login">
-        <Text style={styles.registerText}>Login</Text>
-      </Link>
+      <TouchableOpacity onPress={handleRegister}>
+        <Text style={styles.registerText}>Register</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleBackToLogin}>
+        <Text style={styles.backToLogin}>Back to login</Text>
+      </TouchableOpacity>
+      {missingField && <MissingLoginData message={missingField} />}
     </View>
   );
 }
@@ -82,7 +99,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   registerText: {
-    color: "blue",
+    color: "pink",
+    fontSize: 20,
+    marginTop: 20,
+  },
+  backToLogin: {
+    color: "orange",
+    fontSize: 20,
     marginTop: 20,
   },
 });
