@@ -31,10 +31,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Workouts home",
+          title: "Workouts",
           tabBarIcon: ({ color }) => <MaterialTabBarIcon name="weight-lifter" color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/workout-modal" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
@@ -52,7 +52,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="nutrition"
         options={{
-          title: "Nutrition home",
+          title: "Nutrition",
           tabBarIcon: ({ color }) => <MaterialTabBarIcon name="silverware-fork-knife" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>

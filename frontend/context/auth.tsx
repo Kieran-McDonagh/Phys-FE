@@ -3,7 +3,7 @@ import { useRouter, useSegments } from "expo-router";
 import sendLoginData from "@/api/login";
 import sendRegisterData from "@/api/register";
 
-interface User {
+interface UserData {
   id: string;
   username: string;
   full_name: string;
@@ -12,6 +12,12 @@ interface User {
   workouts: any[];
   nutrition: any[];
   friends: any[];
+}
+
+interface User {
+  access_token: string;
+  token_type: string;
+  user_data: UserData;
 }
 
 interface AuthContextType {
@@ -43,7 +49,7 @@ export function AuthProvider({ children }: PropsWithChildren<{}>) {
   const signIn = async (username: string, password: string) => {
     try {
       const response = await sendLoginData(username, password);
-      setUser(response.user_data);
+      setUser(response);
     } catch (error) {
       console.error("Login failed:", error);
     }

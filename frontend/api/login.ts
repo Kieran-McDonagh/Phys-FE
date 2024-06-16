@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "./base-url";
 
 interface UserData {
   id: string;
@@ -22,7 +23,7 @@ async function sendLoginData(username: string, password: string): Promise<LoginR
   formData.append("password", password);
 
   try {
-    const response = await axios.post<LoginResponse>("http://0.0.0.0:8000/token", formData, {
+    const response = await axios.post<LoginResponse>(`${BASE_URL}/token`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

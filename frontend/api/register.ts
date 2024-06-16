@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "./base-url";
 
 interface UserData {
   id: string;
@@ -27,7 +28,7 @@ async function sendRegisterData(
     password,
   };
   try {
-    const response = await axios.post<LoginResponse>("http://0.0.0.0:8000/api/users", userData);
+    const response = await axios.post<LoginResponse>(`${BASE_URL}/api/users`, userData);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -18,7 +18,7 @@ export default function TabOneScreen() {
 
       <ScrollView style={styles.userInfo}>
         {user &&
-          Object.entries(user).map(([key, value]) => (
+          Object.entries(user.user_data).map(([key, value]) => (
             <View key={key} style={styles.userItem}>
               <Text style={styles.userKey}>{key}</Text>
               <Text style={styles.userValue}>{JSON.stringify(value)}</Text>
