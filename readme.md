@@ -25,8 +25,10 @@ MONGO_URI = "mongodb://mongo:27017/test_database"
 SECRET_KEY = "<secret_key>"
 ALGORITHM = "<chosen algorithm>"
 ACCESS_TOKEN_EXPIRE_MINUTES = <chosen time in minutes>
+```
 
-# to get a secret key, in your terminal run:
+**To get a secret key, in your terminal run:**
+```
 openssl rand -hex 32
 ```
 
