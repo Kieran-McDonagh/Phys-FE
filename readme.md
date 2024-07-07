@@ -4,6 +4,7 @@ This project has been built using:
 
 Backend technologies:
 
+- [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/)
 - [FastAPI](https://fastapi.tiangolo.com/tutorial/)
 - [Docker](https://docs.docker.com/get-started/overview/)
 - [pytest](https://docs.pytest.org/en/8.2.x/getting-started.html)
