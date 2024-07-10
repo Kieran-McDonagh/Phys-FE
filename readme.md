@@ -33,7 +33,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = <chosen time in minutes>
 openssl rand -hex 32
 ```
 
-1. To get just the development server running, from the backend root, run: `scripts/run_app.sh`
+1. To get just the development server running, from the [backend](https://github.com/BattlePhys/BattlePhys-BE) root, run: `docker compose up server`
 
 ## Running Backend Tests
 
@@ -45,6 +45,6 @@ To run the Battlephys App with a development server:
 
 1. First run `bun install` to install dependencies.
 
-2. To run the developer server from the frontend, from the frontend root run: `bun run server`
+2. Run the backend server 
 
 3. Then to run the expo app run `bun start`
