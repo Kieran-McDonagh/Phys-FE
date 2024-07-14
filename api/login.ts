@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "./base-url";
+import { BASE_URL } from "./baseUrl";
 
 interface UserData {
   id: string;
@@ -17,17 +17,24 @@ interface LoginResponse {
   user_data: UserData;
 }
 
-async function sendLoginData(username: string, password: string): Promise<LoginResponse> {
+async function sendLoginData(
+  username: string,
+  password: string
+): Promise<LoginResponse> {
   const formData = new FormData();
   formData.append("username", username);
   formData.append("password", password);
 
   try {
-    const response = await axios.post<LoginResponse>(`${BASE_URL}/token`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await axios.post<LoginResponse>(
+      `${BASE_URL}/token`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

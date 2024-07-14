@@ -1,51 +1,42 @@
-import { useState, useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/context/auth";
-import getUserWorkoutData from "@/api/workout-data";
 import AllWorkouts from "@/components/workout-components/AllWorkouts";
+import useWorkoutStore from "@/store/workoutStore";
 import React from "react";
 
 export default function WorkoutScreen() {
   const auth = useAuth();
-  const [workoutData, setWorkoutData] = useState<any[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { workouts, isLoading, fetchWorkouts, workoutPosted } =
+    useWorkoutStore();
 
-  const fetchData = async () => {
+  useEffect(() => {
     if (auth && auth.user) {
       const { user } = auth;
-      const id = user.user_data.id;
-      const access_token = user.access_token;
-      const token_type = user.token_type;
-      try {
-        setIsLoading(true);
-        console.log("fetching workout data");
-        const data = await getUserWorkoutData(id, access_token, token_type);
-        setWorkoutData(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching workout data:", error);
-      }
+      fetchWorkouts(user.user_data.id, user.access_token, user.token_type);
     }
-  };
+  }, [workoutPosted]);
 
-  // TODO: call useeffect when workout is posted in modal
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  if (!workoutData) {
+  if (workouts.length === 0 && !isLoading) {
     return <Text>No Workouts Found</Text>;
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Workouts home page</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <View
+        style={styles.separator}
+        lightColor="#eee"
+        darkColor="rgba(255,255,255,0.1)"
+      />
       <ScrollView>
         <View>
-          {isLoading ? <Text>Loading...</Text> : null}
-          <AllWorkouts allWorkouts={workoutData} />
+          {isLoading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <AllWorkouts allWorkouts={workouts} />
+          )}
         </View>
       </ScrollView>
     </View>

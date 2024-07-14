@@ -1,14 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "../base-url";
+import { BASE_URL } from "../baseUrl";
 
 interface WorkoutData {
-  type: string;
-  title: string;
-  body: string;
-  notes: string;
-}
-
-interface ReturnedWorkoutData {
   id: string;
   type: string;
   title: string;
@@ -18,18 +11,22 @@ interface ReturnedWorkoutData {
   date_created: string;
 }
 
-async function postWorkoutData(
-  workoutData: WorkoutData,
+async function getUserWorkoutData(
+  id: string,
   accessToken: string,
   tokenType: string
-): Promise<ReturnedWorkoutData> {
+): Promise<WorkoutData[]> {
   try {
     const config: AxiosRequestConfig = {
       headers: {
         Authorization: `${tokenType} ${accessToken}`,
       },
     };
-    const response = await axios.post<ReturnedWorkoutData>(`${BASE_URL}/api/workouts`, workoutData, config);
+
+    const response = await axios.get<WorkoutData[]>(
+      `${BASE_URL}/api/workouts?user_id=${id}`,
+      config
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -44,4 +41,4 @@ async function postWorkoutData(
   }
 }
 
-export default postWorkoutData;
+export default getUserWorkoutData;
