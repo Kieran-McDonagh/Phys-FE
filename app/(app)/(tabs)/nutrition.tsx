@@ -1,13 +1,9 @@
 import { StyleSheet, ScrollView } from "react-native";
 import { Text, View } from "@/components/Themed";
-import { useAuth } from "@/context/auth";
+import useUserStore from "@/store/userStore";
 
 export default function TabOneScreen() {
-  const auth = useAuth();
-
-  if (!auth) {
-    return <Text>Loading...</Text>;
-  }
+  const { user } = useUserStore();
 
   return (
     <View style={styles.container}>

@@ -1,22 +1,46 @@
-import React, { useState } from "react";
-import { StyleSheet, Button, TextInput, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
-import { useAuth } from "@/context/auth";
 import { router } from "expo-router";
 import MissingLoginData from "@/components/login-components/MissingLoginData";
+import useUserStore from "@/store/userStore";
+import apiHealthCheck from "@/api/healthCheck/healthCheck";
+import AppLoadingScreen from "@/components/login-components/AppLoadingScreen";
 
 export default function LoginScreen() {
-  const auth = useAuth();
+  const { signIn } = useUserStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [missingField, setMissingField] = useState<string | null>(null);
+  const [healthCheckSuccess, setHealthCheckSuccess] = useState<boolean>(false);
 
-  const handleSignIn = () => {
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const response = await apiHealthCheck();
+        if (response && response.status === "Healthy" && response.code === 200) {
+          setHealthCheckSuccess(true);
+        } else {
+          setHealthCheckSuccess(false);
+        }
+      } catch (error) {
+        console.log(`Error receiving health check response in login.ts: ${error}`);
+        setHealthCheckSuccess(false);
+      }
+    };
+    checkHealth();
+  }, []);
+
+  const handleSignIn = async () => {
     if (!username || !password) {
       setMissingField("Missing Field");
       return;
     }
-    auth?.signIn(username, password);
+    try {
+      await signIn(username, password);
+    } catch (error) {
+      console.error("Sign-in failed:", error);
+    }
   };
 
   const handleRegisterPress = () => {
@@ -25,34 +49,40 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        placeholderTextColor="black"
-        onChangeText={setUsername}
-        value={username}
-        autoCapitalize='none'
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="black"
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry={true}
-        autoCapitalize='none'
-      />
-      <TouchableOpacity onPress={handleSignIn}>
-        <Text style={styles.signInText}>Log-in</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleRegisterPress}>
-        <Text style={styles.registerText}>Register</Text>
-      </TouchableOpacity>
-      {missingField && <MissingLoginData message={missingField} />}
-    </View>
+    <>
+      {healthCheckSuccess ? (
+        <View style={styles.container}>
+          <Text style={styles.title}>Login</Text>
+          <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            placeholderTextColor="black"
+            onChangeText={setUsername}
+            value={username}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="black"
+            onChangeText={setPassword}
+            value={password}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+          <TouchableOpacity onPress={handleSignIn}>
+            <Text style={styles.signInText}>Log-in</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleRegisterPress}>
+            <Text style={styles.registerText}>Register</Text>
+          </TouchableOpacity>
+          {missingField && <MissingLoginData message={missingField} />}
+        </View>
+      ) : (
+        <AppLoadingScreen />
+      )}
+    </>
   );
 }
 

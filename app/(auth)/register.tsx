@@ -1,24 +1,28 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
-import { useAuth } from "@/context/auth";
 import { router } from "expo-router";
 import MissingLoginData from "@/components/login-components/MissingLoginData";
+import useUserStore from "@/store/userStore";
 
 export default function RegisterScreen() {
-  const auth = useAuth();
+  const { registerUser } = useUserStore();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [missingField, setMissingField] = useState<string | null>(null);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!email || !username || !fullName || !password) {
       setMissingField("Missing Field");
       return;
     }
-    auth?.registerUser(email, username, fullName, password);
+    try {
+      await registerUser(email, username, fullName, password);
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
 
   const handleBackToLogin = () => {

@@ -5,11 +5,11 @@ import TypeChoice from "@/components/workout-modal-components/TypeChoice";
 import WorkoutTitle from "@/components/workout-modal-components/WorkoutTitle";
 import WorkoutNotes from "@/components/workout-modal-components/WorkoutNotes";
 import WorkoutBody from "@/components/workout-modal-components/WorkoutBody";
-import { useAuth } from "@/context/auth";
 import useWorkoutStore from "@/store/workoutStore";
+import useUserStore from "@/store/userStore";
 
 export default function WorkoutModalScreen() {
-  const auth = useAuth();
+  const { user } = useUserStore();
   const { postWorkout } = useWorkoutStore();
   const [selectedType, setSelectedType] = useState("individual");
   const [title, setTitle] = useState("");
@@ -19,21 +19,17 @@ export default function WorkoutModalScreen() {
   const [postFailure, setPostFailure] = useState(false);
 
   const handlePostWorkout = async () => {
-    const body = Object.fromEntries(
-      bodyFields.map(({ key, value }) => [key, value])
-    );
+    const body = Object.fromEntries(bodyFields.map(({ key, value }) => [key, value]));
     const workoutData = {
       type: selectedType,
       title: title,
       notes: notes,
       body,
     };
-    if (auth && auth.user) {
-      const { user } = auth;
-      const accessToken = user.access_token;
-      const tokenType = user.token_type;
+    if (user) {
+      const { access_token, token_type } = user;
       try {
-        await postWorkout(workoutData, accessToken, tokenType);
+        await postWorkout(workoutData, access_token, token_type);
         setPostSuccess(true);
         setPostFailure(false);
       } catch (error) {
@@ -49,9 +45,7 @@ export default function WorkoutModalScreen() {
   };
 
   const handleUpdateField = (index, key, value) => {
-    const updatedFields = bodyFields.map((field, i) =>
-      i === index ? { key, value } : field
-    );
+    const updatedFields = bodyFields.map((field, i) => (i === index ? { key, value } : field));
     setBodyFields(updatedFields);
   };
 

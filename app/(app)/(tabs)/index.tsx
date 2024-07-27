@@ -1,22 +1,21 @@
 import { useEffect } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { Text, View } from "@/components/Themed";
-import { useAuth } from "@/context/auth";
 import AllWorkouts from "@/components/workout-components/AllWorkouts";
 import useWorkoutStore from "@/store/workoutStore";
 import React from "react";
+import useUserStore from "@/store/userStore";
 
 export default function WorkoutScreen() {
-  const auth = useAuth();
-  const { workouts, isLoading, fetchWorkouts, workoutPosted } =
-    useWorkoutStore();
+  const { user } = useUserStore();
+  const { workouts, isLoading, fetchWorkouts, numberOfWorkouts } = useWorkoutStore();
 
   useEffect(() => {
-    if (auth && auth.user) {
-      const { user } = auth;
-      fetchWorkouts(user.user_data.id, user.access_token, user.token_type);
+    if (user) {
+      const { user_data, access_token, token_type } = user;
+      fetchWorkouts(user_data.id, access_token, token_type);
     }
-  }, [workoutPosted]);
+  }, [numberOfWorkouts]);
 
   if (workouts.length === 0 && !isLoading) {
     return <Text>No Workouts Found</Text>;
@@ -25,19 +24,9 @@ export default function WorkoutScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Workouts home page</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <ScrollView>
-        <View>
-          {isLoading ? (
-            <Text>Loading...</Text>
-          ) : (
-            <AllWorkouts allWorkouts={workouts} />
-          )}
-        </View>
+        <View>{isLoading ? <Text>Loading...</Text> : <AllWorkouts allWorkouts={workouts} />}</View>
       </ScrollView>
     </View>
   );
