@@ -16,6 +16,7 @@ Frontend technologies:
 - [Expo](https://docs.expo.dev/get-started/set-up-your-environment/)
 - [Xcode](https://www.freecodecamp.org/news/how-to-download-and-install-xcode/)
 - [Android Studio](https://developer.android.com/studio)
+- [Zustand](https://zustand-demo.pmnd.rs/)
 
 
 ## Running the App
