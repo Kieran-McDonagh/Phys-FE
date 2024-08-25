@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 interface Props {
@@ -23,13 +24,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "red",
   },
   text: {
     fontSize: 16,
     color: "white",
     borderWidth: 1,
-    borderColor: "red",
     width: "15%"
   },
   input: {

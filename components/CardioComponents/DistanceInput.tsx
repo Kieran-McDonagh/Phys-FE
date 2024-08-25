@@ -1,15 +1,16 @@
+import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 interface Props {
-  title: string;
-  setTitle: (type: string) => void;
+  distance: string;
+  setDistance: (type: string) => void;
 }
 
-const WorkoutTitle: React.FC<Props> = ({ title, setTitle }) => {
+const DistanceInput: React.FC<Props> = ({ distance, setDistance }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Title:</Text>
-      <TextInput style={styles.input} onChangeText={setTitle} value={title} autoCapitalize="none" />
+      <Text style={styles.text}>Dist:</Text>
+      <TextInput style={styles.input} onChangeText={setDistance} value={distance} autoCapitalize="none" />
     </View>
   );
 };
@@ -23,15 +24,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "red",
   },
   text: {
     fontSize: 16,
     color: "white",
     borderWidth: 1,
-    borderColor: "red",
     width: "15%"
-
   },
   input: {
     backgroundColor: "white",
@@ -43,4 +41,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WorkoutTitle;
+export default DistanceInput;

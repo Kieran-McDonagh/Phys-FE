@@ -31,29 +31,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Workouts",
+          title: "All Workouts",
           tabBarIcon: ({ color }) => <MaterialTabBarIcon name="weight-lifter" color={color} />,
-          headerRight: () => (
-            <Link href="/workout-modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="plus"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="nutrition"
-        options={{
-          title: "Nutrition",
-          tabBarIcon: ({ color }) => <MaterialTabBarIcon name="silverware-fork-knife" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -71,7 +50,28 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="user"
+        name="NewWorkout"
+        options={{
+          title: "New Workout",
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
+          headerRight: () => (
+            <Link href="/modal" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="plus"
+                    size={25}
+                    color={Colors[colorScheme ?? "light"].text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="User"
         options={{
           title: "User",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,

@@ -39,7 +39,6 @@ const AllWorkouts: React.FC<Props> = ({ allWorkouts }) => {
               <AntDesign name="delete" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <Text>Title: {workout.title}</Text>
           <Text>Type: {workout.type}</Text>
           <Text>Notes: {workout.notes}</Text>
           <Text>User ID: {workout.user_id}</Text>

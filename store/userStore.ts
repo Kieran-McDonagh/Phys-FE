@@ -9,7 +9,6 @@ interface UserData {
   email: string;
   disabled: boolean;
   workouts: any[];
-  nutrition: any[];
   friends: any[];
 }
 
