@@ -22,7 +22,7 @@ Frontend technologies:
 
 To run the 'Phys' App with a development server:
 
-1. Clone the Phys-BE repo: [Here]((https://github.com/Kieran-McDonagh/Phys-BE))
+1. Clone the Phys-BE repo: [Here](https://github.com/Kieran-McDonagh/Phys-BE)
 
 2. Follow the instructions in the readme.md, and start the server with `docker compose up server`
 
