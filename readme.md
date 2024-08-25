@@ -17,34 +17,15 @@ Frontend technologies:
 - [Xcode](https://www.freecodecamp.org/news/how-to-download-and-install-xcode/)
 - [Android Studio](https://developer.android.com/studio)
 
-## Getting Started
-
-1. Create a `.env` file to store your mongo uri, secret key, algorithm and access token expiration, e.g.:
-
-```
-MONGO_URI = "mongodb://mongo:27017/test_database"
-SECRET_KEY = "<secret_key>"
-ALGORITHM = "<chosen algorithm>"
-ACCESS_TOKEN_EXPIRE_MINUTES = <chosen time in minutes>
-```
-
-**To get a secret key, in your terminal run:**
-```
-openssl rand -hex 32
-```
-
-1. To get just the development server running, from the [backend](https://github.com/BattlePhys/BattlePhys-BE) root, run: `docker compose up server`
-
-## Running Backend Tests
-
-To run tests, execute the following command from the backend root: `scripts/run_tests.sh`
 
 ## Running the App
 
-To run the Battlephys App with a development server:
+To run the 'Phys' App with a development server:
 
-1. First run `bun install` to install dependencies.
+1. Clone the Phys-BE repo: [Here]((https://github.com/Kieran-McDonagh/Phys-BE))
 
-2. Run the backend server 
+2. Follow the instructions in the readme.md, and start the server with `docker compose up server`
 
-3. Then to run the expo app run `bun start`
+3. In the Phys-FE repo, run `bun install` to install dependencies.
+
+4. To run the app via Xcode / IOS emulator run the command `bun run ios`, or to run via android studio run the command `bun run android`
