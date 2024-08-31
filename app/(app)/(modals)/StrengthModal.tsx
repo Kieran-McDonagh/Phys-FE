@@ -4,24 +4,32 @@ import React, { useState } from "react";
 import WorkoutNotes from "@/components/workout-modal-components/WorkoutNotes";
 import useWorkoutStore from "@/store/workoutStore";
 import useUserStore from "@/store/userStore";
+import PullExercise from "@/components/strength-components/pull-exercise";
+import PushExercise from "@/components/strength-components/push-exercise";
+import LegExercise from "@/components/strength-components/leg-exercise";
 
 export default function WorkoutModalScreen() {
   const { user } = useUserStore();
   const { postWorkout } = useWorkoutStore();
-  const [selectedType, setSelectedType] = useState("individual");
-  const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
-  const [bodyFields, setBodyFields] = useState([{ key: "", value: "" }]);
   const [postSuccess, setPostSuccess] = useState(false);
   const [postFailure, setPostFailure] = useState(false);
+  const [pullExercise, setPullExercise] = useState("");
+  const [pullWeight, setPullWeight] = useState("");
+  const [pullSets, setPullSets] = useState([0, 0, 0, 0, 0]);
 
   const handlePostWorkout = async () => {
-    const body = Object.fromEntries(bodyFields.map(({ key, value }) => [key, value]));
+    const convertedPullWeight = pullWeight ? `${pullWeight}Kg` : "";
     const workoutData = {
-      type: selectedType,
-      title: title,
+      type: "strength",
       notes: notes,
-      body,
+      body: {
+        pull: {
+          exercise: pullExercise,
+          weight: convertedPullWeight,
+          sets: pullSets,
+        },
+      },
     };
     if (user) {
       const { access_token, token_type } = user;
@@ -37,18 +45,21 @@ export default function WorkoutModalScreen() {
     }
   };
 
-  const handleAddField = () => {
-    setBodyFields([...bodyFields, { key: "", value: "" }]);
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Workout modal</Text>
-      <TouchableOpacity onPress={handleAddField}>
-        <Text>Add Field</Text>
-      </TouchableOpacity>
+      <PullExercise
+        pullExercise={pullExercise}
+        setPullExercise={setPullExercise}
+        pullWeight={pullWeight}
+        setPullWeight={setPullWeight}
+        pullSets={pullSets}
+        setPullSets={setPullSets}
+      />
+      {/* <PushExercise setPushExercise={setPushExercise}/>
+      <LegExercise setLegExercise={setLegExercise} /> */}
       <WorkoutNotes notes={notes} setNotes={setNotes} />
-      <TouchableOpacity onPress={handlePostWorkout}>
+      <TouchableOpacity style={styles.saveButton} onPress={handlePostWorkout}>
         <Text>Save</Text>
       </TouchableOpacity>
       {postSuccess ? <Text>Workout Saved!</Text> : null}
@@ -63,8 +74,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: "red",
   },
   title: {
     fontSize: 20,
@@ -85,5 +94,8 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "80%",
     textAlign: "center",
+  },
+  saveButton: {
+    alignSelf: "center",
   },
 });
