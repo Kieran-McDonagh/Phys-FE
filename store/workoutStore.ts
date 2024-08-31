@@ -3,12 +3,30 @@ import getUserWorkoutData from "@/api/workouts/getWorkout";
 import postWorkoutData from "@/api/workouts/postWorkout";
 import deleteWorkoutData from "@/api/workouts/deleteWorkout";
 
+type cardioWorkoutBody = {
+  cardioType: string;
+  distance: string;
+  time: string[];
+};
+
+type exercise = {
+  exercise: string;
+  weight: string;
+  sets: number[];
+};
+
+type strengthWorkoutBody = {
+  pull: exercise;
+  push: exercise;
+  leg: exercise;
+};
+
 type workoutData = {
   id: string;
   user_id: string;
   date_created: string;
-  type: string;
-  body: object;
+  type: "cardio" | "strength";
+  body: cardioWorkoutBody | strengthWorkoutBody;
   notes: string;
 };
 

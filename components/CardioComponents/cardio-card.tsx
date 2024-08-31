@@ -23,15 +23,15 @@ interface Props {
 }
 
 const CardioCard: FC<Props> = ({ workout }) => {
-    const dateObject = new Date(workout.date_created);
-    const formattedDate = dateObject.toLocaleDateString();
-    const formattedTime = dateObject.toLocaleTimeString();
+  const dateObject = new Date(workout.date_created);
+  const formattedDate = dateObject.toLocaleDateString();
+  const formattedTime = dateObject.toLocaleTimeString();
   return (
     <View style={styles.cardItem}>
-        <View style={styles.dateContainer}>
-        <Text>{formattedDate}</Text>
-        <Text>{formattedTime}</Text>
-        </View>
+      <View style={styles.dateContainer}>
+        <Text style={styles.dateTime}>{formattedDate}</Text>
+        <Text style={styles.dateTime}>{formattedTime}</Text>
+      </View>
       <View style={styles.typeContainer}>
         <Text style={styles.exerciseType}>{workout.body.cardioType}</Text>
         <WorkoutActionButtons id={workout.id} />
@@ -61,11 +61,15 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   dateContainer: {
-    backgroundColor: 'lightblue',
-    display: 'flex',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    padding: 3
+    backgroundColor: "lightblue",
+    display: "flex",
+    justifyContent: "space-around",
+    flexDirection: "row",
+    padding: 3,
+  },
+  dateTime: {
+    color: "black",
+    fontSize: 16,
   },
   typeContainer: {
     display: "flex",

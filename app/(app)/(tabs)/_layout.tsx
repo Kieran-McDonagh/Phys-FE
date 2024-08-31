@@ -31,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "All Workouts",
+          title: "My Workouts",
           tabBarIcon: ({ color }) => <MaterialTabBarIcon name="weight-lifter" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>

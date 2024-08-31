@@ -9,10 +9,16 @@ type cardioWorkoutBody = {
   time: string[];
 };
 
+type exercise = {
+  exercise: string;
+  weight: string;
+  sets: number[];
+};
+
 type strengthWorkoutBody = {
-  push: string[];
-  pull: string[];
-  leg: string[];
+  pull: exercise;
+  push: exercise;
+  leg: exercise;
 };
 
 type workoutData = {
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignContent: "center",
-    width: width * 0.8,
+    width: width * 0.9,
   },
 });
 
