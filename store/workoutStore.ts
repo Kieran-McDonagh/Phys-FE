@@ -3,8 +3,17 @@ import getUserWorkoutData from "@/api/workouts/getWorkout";
 import postWorkoutData from "@/api/workouts/postWorkout";
 import deleteWorkoutData from "@/api/workouts/deleteWorkout";
 
+type workoutData = {
+  id: string;
+  user_id: string;
+  date_created: string;
+  type: string;
+  body: object;
+  notes: string;
+};
+
 interface WorkoutState {
-  workouts: any[];
+  workouts: workoutData[];
   isLoading: boolean;
   numberOfWorkouts: number;
   fetchWorkouts: (id: string, accessToken: string, tokenType: string) => Promise<void>;

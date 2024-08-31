@@ -19,11 +19,24 @@ export default function WorkoutModalScreen() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [postFailure, setPostFailure] = useState(false);
   const handlePostWorkout = async () => {
+    const convertDistance = (distanceString: string) => {
+      return distanceString ? `${distanceString}km` : "";
+    };
+
+    const convertTime = (time: string[]) => {
+      const hours = time[0] ? `${time[0]}h` : `0h`;
+      const minutes = time[1] ? `${time[1]}m` : `0m`;
+      const seconds = time[2] ? `${time[2]}s` : `0s`;
+      return [hours, minutes, seconds];
+    };
+
     const workoutData = {
       type: "cardio",
       notes: notes,
       body: {
-        [cardioType]: { distance: [distance], time: [time] },
+        cardioType: cardioType,
+        distance: convertDistance(distance),
+        time: convertTime(time),
       },
     };
     if (user) {

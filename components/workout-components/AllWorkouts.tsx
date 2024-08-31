@@ -1,77 +1,58 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import useUserStore from "@/store/userStore";
-import useWorkoutStore from "@/store/workoutStore";
+import { ScrollView, StyleSheet, Dimensions, View } from "react-native";
+import CardioCard from "../CardioComponents/cardio-card";
+import StrengthCard from "../strength-components/strength-card";
+
+type cardioWorkoutBody = {
+  cardioType: string;
+  distance: string;
+  time: string[];
+};
+
+type strengthWorkoutBody = {
+  push: string[];
+  pull: string[];
+  leg: string[];
+};
+
+type workoutData = {
+  id: string;
+  user_id: string;
+  date_created: string;
+  type: "cardio" | "strength";
+  body: cardioWorkoutBody | strengthWorkoutBody;
+  notes: string;
+};
 
 interface Props {
-  allWorkouts: any[];
+  allWorkouts: workoutData[];
 }
 
 const AllWorkouts: React.FC<Props> = ({ allWorkouts }) => {
-  const { user } = useUserStore();
-  const { deleteWorkout } = useWorkoutStore();
-
-  const handleDelete = async (workoutId: string) => {
-    if (user) {
-      const { access_token, token_type } = user;
-      try {
-        await deleteWorkout(workoutId, access_token, token_type);
-      } catch (error) {
-        console.error("Error deleting workout data:", error);
-      }
-    }
-  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {allWorkouts.map((workout, index) => (
-        <View key={index} style={styles.item}>
-          <View key={index} style={styles.actions}>
-            <TouchableOpacity>
-              <Entypo name="edit" size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                handleDelete(workout.id);
-              }}
-            >
-              <AntDesign name="delete" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-          <Text>Type: {workout.type}</Text>
-          <Text>Notes: {workout.notes}</Text>
-          <Text>User ID: {workout.user_id}</Text>
-          <Text>Date Created: {workout.date_created}</Text>
-          <Text>Body: {JSON.stringify(workout.body, null, 2)}</Text>
+        <View key={index}>
+          {workout.type === "cardio" ? (
+            <CardioCard workout={workout as workoutData & { type: "cardio"; body: cardioWorkoutBody }} />
+          ) : (
+            <StrengthCard workout={workout as workoutData & { type: "strength"; body: strengthWorkoutBody }} />
+          )}
         </View>
       ))}
     </ScrollView>
   );
 };
 
+const { width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  item: {
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    marginBottom: 10,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 5,
-  },
-  text: {
-    fontSize: 16,
-  },
-  actions: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 10,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignContent: "center",
+    width: width * 0.8,
   },
 });
 

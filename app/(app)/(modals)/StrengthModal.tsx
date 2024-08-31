@@ -17,17 +17,36 @@ export default function WorkoutModalScreen() {
   const [pullExercise, setPullExercise] = useState("");
   const [pullWeight, setPullWeight] = useState("");
   const [pullSets, setPullSets] = useState([0, 0, 0, 0, 0]);
+  const [pushExercise, setPushExercise] = useState("");
+  const [pushWeight, setPushWeight] = useState("");
+  const [pushSets, setPushSets] = useState([0, 0, 0, 0, 0]);
+  const [legExercise, setLegExercise] = useState("");
+  const [legWeight, setLegWeight] = useState("");
+  const [legSets, setLegSets] = useState([0, 0, 0, 0, 0]);
+
+  const convertWeight = (weightString: string) => {
+    return weightString ? `${weightString}Kg` : "";
+  };
 
   const handlePostWorkout = async () => {
-    const convertedPullWeight = pullWeight ? `${pullWeight}Kg` : "";
     const workoutData = {
       type: "strength",
       notes: notes,
       body: {
         pull: {
           exercise: pullExercise,
-          weight: convertedPullWeight,
+          weight: convertWeight(pullWeight),
           sets: pullSets,
+        },
+        push: {
+          exercise: pushExercise,
+          weight: convertWeight(pushWeight),
+          sets: pushSets,
+        },
+        leg: {
+          exercise: legExercise,
+          weight: convertWeight(legWeight),
+          sets: legSets,
         },
       },
     };
@@ -56,8 +75,22 @@ export default function WorkoutModalScreen() {
         pullSets={pullSets}
         setPullSets={setPullSets}
       />
-      {/* <PushExercise setPushExercise={setPushExercise}/>
-      <LegExercise setLegExercise={setLegExercise} /> */}
+      <PushExercise
+        pushExercise={pushExercise}
+        setPushExercise={setPushExercise}
+        pushWeight={pushWeight}
+        setPushWeight={setPushWeight}
+        pushSets={pushSets}
+        setPushSets={setPushSets}
+      />
+      <LegExercise
+        legExercise={legExercise}
+        setLegExercise={setLegExercise}
+        legWeight={legWeight}
+        setLegWeight={setLegWeight}
+        legSets={legSets}
+        setLegSets={setLegSets}
+      />
       <WorkoutNotes notes={notes} setNotes={setNotes} />
       <TouchableOpacity style={styles.saveButton} onPress={handlePostWorkout}>
         <Text>Save</Text>

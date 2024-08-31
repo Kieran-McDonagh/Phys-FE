@@ -1,39 +1,59 @@
 import SelectDropdown from "react-native-select-dropdown";
 import React, { FC } from "react";
-import { View, Text } from "../Themed";
+import { View, Text } from "@/components/Themed";
 import { StyleSheet } from "react-native";
+import WeightInput from "./weight-input";
+import RepCounterList from "./rep-counter-list";
 
-interface Props {
-  setPushExercise: (type: string) => void;
-}
+type props = {
+  pushExercise: string;
+  setPushExercise: (pushExercise: string) => void;
+  pushWeight: string;
+  setPushWeight: (pushWeight: string) => void;
+  pushSets: number[];
+  setPushSets: (pushSets: number[]) => void;
+};
 
-const PushExercise: FC<Props> = ({ setPushExercise }) => {
+const PushExercise: FC<props> = ({
+  pushExercise,
+  setPushExercise,
+  pushWeight,
+  setPushWeight,
+  pushSets,
+  setPushSets,
+}) => {
   const options = [{ title: "Push ups" }, { title: "Dips" }, { title: "Bench press" }];
 
+  const handleSelect = (selectedItem: { title: string }) => {
+    setPushExercise(selectedItem.title.toLowerCase());
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Push:</Text>
-      <SelectDropdown
-        data={options}
-        onSelect={(selectedItem) => {
-          setPushExercise(selectedItem.title.toLowerCase());
-        }}
-        renderButton={(selectedItem) => (
-          <View style={styles.dropdownButtonStyle}>
-            <Text style={styles.dropdownButtonTxtStyle}>
-              {(selectedItem && selectedItem.title) || "Not Selected"}
-            </Text>
-          </View>
-        )}
-        renderItem={(item, index, isSelected) => (
-          <View style={[styles.dropdownItemStyle, isSelected && { backgroundColor: "#D2D9DF" }]}>
-            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-          </View>
-        )}
-        showsVerticalScrollIndicator={false}
-        dropdownStyle={styles.dropdownMenuStyle}
-      />
-    </View>
+    <>
+      <View style={styles.container}>
+        <Text style={styles.text}>Push:</Text>
+        <SelectDropdown
+          data={options}
+          onSelect={handleSelect}
+          renderButton={(selectedItem) => (
+            <View style={styles.dropdownButtonStyle}>
+              <Text style={styles.dropdownButtonTxtStyle}>
+                {(selectedItem && selectedItem.title) || "Not Selected"}
+              </Text>
+            </View>
+          )}
+          renderItem={(item, index, isSelected) => (
+            <View style={[styles.dropdownItemStyle, isSelected && { backgroundColor: "#D2D9DF" }]}>
+              <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
+        <WeightInput weight={pushWeight} setWeight={setPushWeight} />
+      </View>
+      <RepCounterList sets={pushSets} setSets={setPushSets} />
+    </>
   );
 };
 
@@ -42,7 +62,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     flexDirection: "row",
-    gap: 10,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
@@ -52,7 +71,6 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     backgroundColor: "#E9ECEF",
-    // borderRadius: 12,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -73,7 +91,6 @@ const styles = StyleSheet.create({
   },
   dropdownMenuStyle: {
     backgroundColor: "#E9ECEF",
-    // borderRadius: 8,
   },
   dropdownItemStyle: {
     width: "100%",

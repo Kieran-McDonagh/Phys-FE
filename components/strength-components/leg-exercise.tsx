@@ -1,39 +1,59 @@
 import SelectDropdown from "react-native-select-dropdown";
 import React, { FC } from "react";
-import { View, Text } from "../Themed";
+import { View, Text } from "@/components/Themed";
 import { StyleSheet } from "react-native";
+import WeightInput from "./weight-input";
+import RepCounterList from "./rep-counter-list";
 
-interface Props {
-  setLegExercise: (type: string) => void;
-}
+type props = {
+  legExercise: string;
+  setLegExercise: (legExercise: string) => void;
+  legWeight: string;
+  setLegWeight: (legWeight: string) => void;
+  legSets: number[];
+  setLegSets: (legSets: number[]) => void;
+};
 
-const LegExercise: FC<Props> = ({ setLegExercise }) => {
-  const options = [{ title: "Squats" }, { title: "Split squat" }, { title: "Lunges" }];
+const LegExercise: FC<props> = ({
+  legExercise,
+  setLegExercise,
+  legWeight,
+  setLegWeight,
+  legSets,
+  setLegSets,
+}) => {
+  const options = [{ title: "Squats" }, { title: "Lunges" }, { title: "RDLs" }];
+
+  const handleSelect = (selectedItem: { title: string }) => {
+    setLegExercise(selectedItem.title.toLowerCase());
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Legs:</Text>
-      <SelectDropdown
-        data={options}
-        onSelect={(selectedItem) => {
-          setLegExercise(selectedItem.title.toLowerCase());
-        }}
-        renderButton={(selectedItem) => (
-          <View style={styles.dropdownButtonStyle}>
-            <Text style={styles.dropdownButtonTxtStyle}>
-              {(selectedItem && selectedItem.title) || "Not Selected"}
-            </Text>
-          </View>
-        )}
-        renderItem={(item, index, isSelected) => (
-          <View style={[styles.dropdownItemStyle, isSelected && { backgroundColor: "#D2D9DF" }]}>
-            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-          </View>
-        )}
-        showsVerticalScrollIndicator={false}
-        dropdownStyle={styles.dropdownMenuStyle}
-      />
-    </View>
+    <>
+      <View style={styles.container}>
+        <Text style={styles.text}>Leg:</Text>
+        <SelectDropdown
+          data={options}
+          onSelect={handleSelect}
+          renderButton={(selectedItem) => (
+            <View style={styles.dropdownButtonStyle}>
+              <Text style={styles.dropdownButtonTxtStyle}>
+                {(selectedItem && selectedItem.title) || "Not Selected"}
+              </Text>
+            </View>
+          )}
+          renderItem={(item, index, isSelected) => (
+            <View style={[styles.dropdownItemStyle, isSelected && { backgroundColor: "#D2D9DF" }]}>
+              <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
+        <WeightInput weight={legWeight} setWeight={setLegWeight} />
+      </View>
+      <RepCounterList sets={legSets} setSets={setLegSets} />
+    </>
   );
 };
 
@@ -42,7 +62,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     flexDirection: "row",
-    gap: 10,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
@@ -52,7 +71,6 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     backgroundColor: "#E9ECEF",
-    // borderRadius: 12,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -73,7 +91,6 @@ const styles = StyleSheet.create({
   },
   dropdownMenuStyle: {
     backgroundColor: "#E9ECEF",
-    // borderRadius: 8,
   },
   dropdownItemStyle: {
     width: "100%",
