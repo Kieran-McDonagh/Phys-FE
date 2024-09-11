@@ -1,4 +1,4 @@
-# BattlePhys (**In Development**)
+# Phys (**In Development**)
 
 This project has been built using:
 
